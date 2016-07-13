@@ -5,6 +5,6 @@
 
 <page:layout>
 <span class="span4"></span>
-<span class="span5"><%=request.getAttribute("error")%></span>
+<span class="span5">${error}</span>
 <span class="span3"></span>
 </page:layout>

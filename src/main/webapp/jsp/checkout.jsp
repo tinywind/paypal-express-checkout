@@ -7,8 +7,7 @@
     <div class="span2">
     </div>
     <div class="span5">
-        <!--Form containing item parameters and seller credentials needed for SetExpressCheckout Call-->
-        <form class="form" name="checkoutForm" action="Checkout" method="POST">
+        <form class="form" name="checkoutForm" action="/checkout" method="POST">
             <input type="hidden" name="L_PAYMENTREQUEST_0_AMT"
                    value="<c:out value="${fn:escapeXml(PAYMENTREQUEST_0_AMT)}" />">
             <div class="row-fluid">
@@ -17,33 +16,32 @@
                     <table>
                         <tr>
                             <td width="30%">First Name</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_FIRSTNAME" value="Alegra"></input></td>
+                            <td><input type="text" name="L_PAYMENTREQUEST_FIRSTNAME" value="Alegra"/></td>
                         </tr>
                         <tr>
                             <td>Last Name:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_LASTNAME" value="Valava"></input></td>
+                            <td><input type="text" name="L_PAYMENTREQUEST_LASTNAME" value="Valava"/></td>
                         </tr>
                         <tr>
                             <td>Address</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOSTREET"
-                                       value="55 East 52nd Street"></input></td>
-                        </tr>
-                        <tr>
-                            <td>Address 1</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOSTREET2" value="21st Floor"></input>
+                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOSTREET" value="55 East 52nd Street"/>
                             </td>
                         </tr>
                         <tr>
+                            <td>Address 1</td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOSTREET2" value="21st Floor"/></td>
+                        </tr>
+                        <tr>
                             <td>City:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOCITY" value="New York"></input></td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOCITY" value="New York"/></td>
                         </tr>
                         <tr>
                             <td>State:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOSTATE" value="NY"></input></td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOSTATE" value="NY"/></td>
                         </tr>
                         <tr>
                             <td>Postal Code:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOZIP" value="10022"></input></td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOZIP" value="10022"/></td>
                         </tr>
                         <tr>
                             <td>Country</td>
@@ -298,8 +296,7 @@
                         </tr>
                         <tr>
                             <td>Telephone:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOPHONENUM" value=""
-                                       maxlength="12"></input></td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOPHONENUM" value="" maxlength="12"/></td>
                         </tr>
 
                         <tr>
@@ -307,23 +304,25 @@
                         </tr>
                         <tr>
                             <td>Shipping Type:</td>
-                            <td><select name="shipping_method" id="shipping_method" style="width: 250px;"
+                            <td>
+                                <select name="shipping_method" id="shipping_method" style="width: 250px;"
                                         class="required-entry">
-                                <option value="">Please select a shipping method...</option>
-                                <optgroup label="United Parcel Service" style="font-style:normal;">
-                                    <option value="2.00">
-                                        Worldwide Expedited - $2.00
-                                    </option>
-                                    <option value="3.00">
-                                        Worldwide Express Saver - $3.00
-                                    </option>
-                                </optgroup>
-                                <optgroup label="Flat Rate" style="font-style:normal;">
-                                    <option selected value="0.00">
-                                        Fixed - $0.00
-                                    </option>
-                                </optgroup>
-                            </select><br>
+                                    <option value="">Please select a shipping method...</option>
+                                    <optgroup label="United Parcel Service" style="font-style:normal;">
+                                        <option value="2.00">
+                                            Worldwide Expedited - $2.00
+                                        </option>
+                                        <option value="3.00">
+                                            Worldwide Express Saver - $3.00
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Flat Rate" style="font-style:normal;">
+                                        <option selected value="0.00">
+                                            Fixed - $0.00
+                                        </option>
+                                    </optgroup>
+                                </select>
+                                <br>
                             </td>
                         </tr>
                         <tr>
@@ -359,14 +358,14 @@
     </div>
     <script type="text/javascript">
         window.paypalCheckoutReady = function () {
-            paypal.checkout.setup('<%= new com.paypal.PayPal().getGvAPIUserName() %>', {
+            paypal.checkout.setup('${gvApiUserName}', {
                 button: 'placeOrderBtn',
-                environment: '<%= new com.paypal.PayPal().getEnvironment() %>',
+                environment: '${environment}',
                 condition: function () {
                     return !!document.getElementById('paypal_payment_option').checked;
                 }
             });
         };
     </script>
-    <script src="//www.paypalobjects.com/api/checkout.js" async></script>
+    <script src="http://www.paypalobjects.com/api/checkout.js" async></script>
 </page:layout>

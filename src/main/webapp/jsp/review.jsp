@@ -12,42 +12,29 @@
                 <td><h4>Shipping Address</h4></td>
                 <td><h4>Billing Address</h4></td>
             </tr>
-            <% HashMap result = (HashMap) request.getAttribute("result"); %>
             <tr>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%>
-                </td>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%>
-                </td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTONAME")}</td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTONAME")}</td>
             </tr>
             <tr>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%>
-                </td>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%>
-                </td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOSTREET")}</td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOSTREET")}</td>
             </tr>
             <tr>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%>
-                </td>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%>
-                </td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOCITY")}</td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOCITY")}</td>
             </tr>
             <tr>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTATE")%>
-                </td>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTATE")%>
-                </td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOSTATE")}</td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOSTATE")}</td>
             </tr>
             <tr>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")%>
-                </td>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")%>
-                </td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")}</td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")}</td>
             </tr>
             <tr>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOZIP")%>
-                </td>
-                <td><%=result.get("PAYMENTREQUEST_0_SHIPTOZIP")%>
-                </td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOZIP")}</td>
+                <td>${result.get("PAYMENTREQUEST_0_SHIPTOZIP")}</td>
             </tr>
             <tr>
                 <td colspan="2">&nbsp;</td>
@@ -58,13 +45,11 @@
 
             <tr>
                 <td>Total Amount:</td>
-                <td id='amount'><%=result.get("PAYMENTREQUEST_0_AMT")%>
-                </td>
+                <td id='amount'>${result.get("PAYMENTREQUEST_0_AMT")}</td>
             </tr>
             <tr>
                 <td>Currency Code:</td>
-                <td><%=result.get("CURRENCYCODE")%>
-                </td>
+                <td>${result.get("CURRENCYCODE")}</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
@@ -72,7 +57,7 @@
             <tr>
                 <td><h3>Shipping Method</h3></td>
             </tr>
-            <form action="Return?page=return" name="order_confirm" method="POST">
+            <form action="/return?page=return" name="order_confirm" method="POST">
                 <table>
                     <tbody>
                     <tr>
@@ -108,8 +93,8 @@
     <div class="span3">
     </div>
     <script>
-        var origAmt =<%=result.get("PAYMENTREQUEST_0_AMT")%>;
-        var oldshipAmt =<%=result.get("PAYMENTREQUEST_0_SHIPPINGAMT")%>;
+        var origAmt =${result.get("PAYMENTREQUEST_0_AMT")};
+        var oldshipAmt =${result.get("PAYMENTREQUEST_0_SHIPPINGAMT")};
         function updateAmount() {
             var e = document.getElementById("shipping_method");
             var shipAmt = parseInt(e.options[e.selectedIndex].value);
@@ -117,7 +102,6 @@
             document.getElementById("amount").innerHTML = newAmt + '.00';
         }
         $(document).ready(function () {
-            // any code goes here
             updateAmount();
         });
     </script>

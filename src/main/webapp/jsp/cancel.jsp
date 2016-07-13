@@ -8,8 +8,3 @@
     <span class="span5"><div class="hero-unit">You cancelled the order.</div></span>
     <span class="span3"></span>
 </page:layout>
-
-<% HttpSession nsession = request.getSession(false);
-    if (nsession != null)
-        session.invalidate();
-%>

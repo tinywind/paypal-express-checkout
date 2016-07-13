@@ -5,23 +5,30 @@
 
 <page:layout>
     <div class="span5">
-        <form class="form" action="Checkout" method="POST">
+        <form class="form" action="/checkout" method="POST">
             <div class="row-fluid">
                 <div class="span6 inner-span">
                     <!--Demo Product details -->
                     <table>
-                        <tr><h3> DIGITAL SLR CAMERA </h3></tr>
-                        <tr><img src="img/camera.jpg" width="300" height="250"/></tr>
+                        <tr>
+                            <td>
+                                <h3> DIGITAL SLR CAMERA </h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img src="/img/camera.jpg" width="300" height="250"/>
+                            </td>
+                        </tr>
                         <tr>
                             <td><p class="lead"> Buyer Credentials:</p></td>
                         </tr>
                         <tr>
                             <td>Email-id:&nbsp;&nbsp;&nbsp;<input type="text" id="buyer_email" name="buyer_email"
-                                                                  readonly></input></td>
+                                                                  readonly/></td>
                         </tr>
                         <tr>
-                            <td>Password:<input type="text" id="buyer_password" name="buyer_password" readonly></input>
-                            </td>
+                            <td>Password:<input type="text" id="buyer_password" name="buyer_password" readonly/></td>
                         </tr>
                     </table>
                 </div>
@@ -30,60 +37,50 @@
                     <table>
                         <tr>
                             <td>Item Name:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_0_NAME0" value="DSLR Camera"></input></td>
+                            <td><input type="text" name="L_PAYMENTREQUEST_0_NAME0" value="DSLR Camera"/></td>
                         </tr>
                         <tr>
                             <td>Item ID:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_0_NUMBER0" value="A0123"></input></td>
+                            <td><input type="text" name="L_PAYMENTREQUEST_0_NUMBER0" value="A0123"/></td>
                         </tr>
                         <tr>
                             <td>Description:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_0_DESC0" value="Autofocus Camera"></input>
-                            </td>
+                            <td><input type="text" name="L_PAYMENTREQUEST_0_DESC0" value="Autofocus Camera"/></td>
                         </tr>
                         <tr>
                             <td>Quantity:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_0_QTY0" value="1" readonly></input></td>
+                            <td><input type="text" name="L_PAYMENTREQUEST_0_QTY0" value="1" readonly/></td>
                         </tr>
                         <tr>
                             <td>Price:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_ITEMAMT" value="10.00" readonly></input></td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_ITEMAMT" value="10.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Tax:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_TAXAMT" value="2.00" readonly></input></td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_TAXAMT" value="2.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Shipping Amount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPPINGAMT" value="5.00" readonly></input>
-                            </td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPPINGAMT" value="5.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Handling Amount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_HANDLINGAMT" value="1.00" readonly></input>
-                            </td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_HANDLINGAMT" value="1.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Shipping Discount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPDISCAMT" value="-3.00" readonly></input>
-                            </td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPDISCAMT" value="-3.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Insurance Amount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_INSURANCEAMT" value="2.00" readonly></input>
-                            </td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_INSURANCEAMT" value="2.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Total Amount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_AMT" value="17.00" readonly></input></td>
+                            <td><input type="text" name="PAYMENTREQUEST_0_AMT" value="17.00" readonly/></td>
                         </tr>
                         <tr>
-                            <td>
-                                <%
-                                    String path = request.getContextPath();
-                                    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
-                                %>
-                                <input type="hidden" name="LOGOIMG" value="<%=basePath %>img/logo.jpg"></input></td>
+                            <td><input type="hidden" name="LOGOIMG" value="/img/logo.jpg"/></td>
                         </tr>
                         <tr>
                             <td>Currency Code:</td>
@@ -114,15 +111,19 @@
                                     <option value="THB">THB</option>
                                     <option value="TRY">TRY</option>
                                 </select>
-                                <br></td>
+                                <br>
+                            </td>
                         </tr>
                         <tr>
                             <td>Payment Type:</td>
-                            <td><select name="paymentType">
-                                <option value="Sale">Sale</option>
-                                <option value="Authorization">Authorization</option>
-                                <option value="Order">Order</option>
-                            </select><br></td>
+                            <td>
+                                <select name="paymentType">
+                                    <option value="Sale">Sale</option>
+                                    <option value="Authorization">Authorization</option>
+                                    <option value="Order">Order</option>
+                                </select>
+                                <br>
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="2"><br/><br/>
@@ -187,7 +188,7 @@
                 <br>
                 2) Copy the below &lt;form&gt; .. &lt;/form&gt; to your shopping cart page.
                 <br><br>
-                <pre><code>&lt;form action="Checkout" method="POST"&gt;
+                <pre><code>&lt;form action="/checkout" method="POST"&gt;
       &lt;input type="hidden" name="PAYMENTREQUEST_0_AMT" value="10.00"&gt;&lt;/input&gt;
       &lt;input type="hidden" name="currencyCodeType" value="USD"&gt;&lt;/input&gt;
       &lt;input type="hidden" name="paymentType" value="Sale"&gt;&lt;/input&gt;
@@ -222,7 +223,7 @@ environment: 'sandbox' //or 'production' depending on your environment
                 <br>
                 2) Copy the below &lt;form&gt; .. &lt;/form&gt; to your shopping cart page.
                 <br><br>
-                <pre><code>&lt;form action="Checkout" method="POST"&gt;
+                <pre><code>&lt;form action="/checkout" method="POST"&gt;
  &lt;input type="hidden" name="PAYMENTREQUEST_0_AMT" value="10.00"&gt;&lt;/input&gt;
  &lt;input type="hidden" name="currencyCodeType" value="USD"&gt;&lt;/input&gt;
  &lt;input type="hidden" name="paymentType" value="Sale"&gt;&lt;/input&gt;
@@ -267,11 +268,11 @@ environment: 'sandbox' //or 'production' depending on your environment
 
     <script type="text/javascript">
         window.paypalCheckoutReady = function () {
-            paypal.checkout.setup('<%= new com.paypal.PayPal().getGvAPIUserName() %>', {
+            paypal.checkout.setup('${gvApiUserName}', {
                 container: 'myContainer',
-                environment: '<%= new com.paypal.PayPal().getEnvironment() %>'
+                environment: '${environment}'
             });
         };
     </script>
-    <script src="//www.paypalobjects.com/api/checkout.js" async></script>
+    <script src="http://www.paypalobjects.com/api/checkout.js" async></script>
 </page:layout>
