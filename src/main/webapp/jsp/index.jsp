@@ -5,111 +5,86 @@
 
 <page:layout>
     <div class="span5">
-        <form class="form" action="/checkout" method="POST">
+        <form class="form" action="/checkout" method="post">
             <div class="row-fluid">
                 <div class="span6 inner-span">
                     <!--Demo Product details -->
                     <table>
                         <tr>
-                            <td>
-                                <h3> DIGITAL SLR CAMERA </h3>
-                            </td>
+                            <td colspan="2"><h3> DIGITAL SLR CAMERA </h3></td>
                         </tr>
                         <tr>
-                            <td>
-                                <img src="/img/camera.jpg" width="300" height="250"/>
-                            </td>
+                            <td colspan="2"><img src="/img/camera.jpg" width="300" height="250"/></td>
                         </tr>
                         <tr>
-                            <td><p class="lead"> Buyer Credentials:</p></td>
+                            <td colspan="2"><p class="lead"> Buyer Credentials:</p></td>
                         </tr>
                         <tr>
-                            <td>Email-id:&nbsp;&nbsp;&nbsp;<input type="text" id="buyer_email" name="buyer_email"
-                                                                  readonly/></td>
+                            <td>Email-id:</td>
+                            <td><input type="text" id="buyer_email" name="buyer_email" readonly/></td>
                         </tr>
                         <tr>
-                            <td>Password:<input type="text" id="buyer_password" name="buyer_password" readonly/></td>
+                            <td>Password:</td>
+                            <td><input type="text" id="buyer_password" name="buyer_password" readonly/></td>
                         </tr>
                     </table>
                 </div>
                 <div class="span6 inner-span">
                     <p class="lead"> Item Specifications:</p>
+                    <input type="hidden" name="logoImage" value="/img/logo.jpg"/>
                     <table>
                         <tr>
                             <td>Item Name:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_0_NAME0" value="DSLR Camera"/></td>
+                            <td><input type="text" name="productName" value="DSLR Camera"/></td>
                         </tr>
                         <tr>
                             <td>Item ID:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_0_NUMBER0" value="A0123"/></td>
+                            <td><input type="text" name="orderNumber" value="A0123"/></td>
                         </tr>
                         <tr>
                             <td>Description:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_0_DESC0" value="Autofocus Camera"/></td>
+                            <td><input type="text" name="productDescription" value="Autofocus Camera"/></td>
                         </tr>
                         <tr>
                             <td>Quantity:</td>
-                            <td><input type="text" name="L_PAYMENTREQUEST_0_QTY0" value="1" readonly/></td>
+                            <td><input type="text" name="quantity" value="1" readonly/></td>
                         </tr>
                         <tr>
                             <td>Price:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_ITEMAMT" value="10.00" readonly/></td>
+                            <td><input type="text" name="itemAmount" value="10.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Tax:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_TAXAMT" value="2.00" readonly/></td>
+                            <td><input type="text" name="taxAmount" value="2.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Shipping Amount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPPINGAMT" value="5.00" readonly/></td>
+                            <td><input type="text" name="shippingAmount" value="5.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Handling Amount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_HANDLINGAMT" value="1.00" readonly/></td>
+                            <td><input type="text" name="handlingAmount" value="1.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Shipping Discount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPDISCAMT" value="-3.00" readonly/></td>
+                            <td><input type="text" name="shippingDiscount" value="-3.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Insurance Amount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_INSURANCEAMT" value="2.00" readonly/></td>
+                            <td><input type="text" name="insuranceAmount" value="2.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Total Amount:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_AMT" value="17.00" readonly/></td>
-                        </tr>
-                        <tr>
-                            <td><input type="hidden" name="LOGOIMG" value="/img/logo.jpg"/></td>
+                            <td><input type="text" name="totalAmount" value="17.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Currency Code:</td>
                             <td>
                                 <select id="currencyCodeType" name="currencyCodeType">
-                                    <option selected value="USD">USD</option>
-                                    <option value="AUD">AUD</option>
-                                    <option value="BRL">BRL</option>
-                                    <option value="AUD">AUD</option>
-                                    <option value="CAD">CAD</option>
-                                    <option value="CZK">CZK</option>
-                                    <option value="DKK">DKK</option>
-                                    <option value="EUR">EUR</option>
-                                    <option value="HKD">HKD</option>
-                                    <option value="HUF">HUF</option>
-                                    <option value="ILS">ILS</option>
-                                    <option value="JPY">JPY</option>
-                                    <option value="NOK">NOK</option>
-                                    <option value="MXN">MXN</option>
-                                    <option value="NZD">NZD</option>
-                                    <option value="PHP">PHP</option>
-                                    <option value="PLN">PLN</option>
-                                    <option value="GBP">GBP</option>
-                                    <option value="SGD">SGD</option>
-                                    <option value="SEK">SEK</option>
-                                    <option value="CHF">CHF</option>
-                                    <option value="TWD">TWD</option>
-                                    <option value="THB">THB</option>
-                                    <option value="TRY">TRY</option>
+                                    <c:forEach var="type" items="${checkout.currencyCodeTypeOptions}"
+                                               varStatus="status">
+                                        <option value="${type.value}" ${status.first ? "selected" : ""}>${type.key}</option>
+                                    </c:forEach>
                                 </select>
                                 <br>
                             </td>
@@ -118,15 +93,16 @@
                             <td>Payment Type:</td>
                             <td>
                                 <select name="paymentType">
-                                    <option value="Sale">Sale</option>
-                                    <option value="Authorization">Authorization</option>
-                                    <option value="Order">Order</option>
+                                    <c:forEach var="type" items="${checkout.paymentTypeOptions}">
+                                        <option value="${type.value}">${type.key}</option>
+                                    </c:forEach>
                                 </select>
                                 <br>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2"><br/><br/>
+                            <td colspan="2">
+                                <br/><br/>
                                 <div id="myContainer"></div>
                             </td>
                         </tr>
@@ -134,145 +110,48 @@
                             <td> -- OR --</td>
                         </tr>
                         <tr>
-                            <td><input type="Submit" alt="Proceed to Check out" class="btn btn-primary btn-large"
-                                       value="Proceed to Check out" name="checkout"/></td>
+                            <td>
+                                <input type="Submit" alt="Proceed to Check out" class="btn btn-primary btn-large"
+                                       value="Proceed to Check out" name="checkout"/>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
         </form>
     </div>
-    <div class="span2">
-    </div>
-    <div class="span5">
-        <div class="row-fluid">
-            <div class="span12 inner-span">
-                <p class="lead"> README: </p>
-                <h4> README: </h4>
-                <h5>BEFORE YOU GET STARTED:</h5>
-                This code sample shows the new checkout flow called In-Context checkout experience. You need to meet the
-                <a href="https://developer.paypal.com/webapps/developer/docs/classic/limited-release/express-checkout/enable/#eligibility-review"
-                   target="_blank">eligibility criteria </a> to determine whether your integration will be a good
-                candidate for In-Context checkout experience option. Please refer to the <a
-                    href="https://developer.paypal.com/webapps/developer/docs/classic/limited-release/express-checkout/enable/#eligibility-review"
-                    target="_blank">eligibility criteria </a>. <br>If you are eligible for In-Context checkout based on
-                the eligibility requirements, please refer to the <a href="#incontext">'In-Context Checkout integration
-                steps'</a> below. But, if you are not eligible, please refer to the <a href="#expresscheckout">'Express
-                Checkout integration steps'</a> below.
-                <br>
-                <h5> PRE-READ: </h5>
-                <p>
-                    1) Click on ‘Checkout with PayPal’ button and see the experience.
-                    <br>
-                    2) If you get any Firewall warning, add rule to the Firewall to allow incoming connections for your
-                    application.
-                    <br>
-                    3) Checkout with PayPal using a buyer sandbox account provided on this page. And you're done!
-                    <br>
-                    4) The sample code uses default sandbox credentials which are set in config/config.properties. You
-                    can create your own credentials by creating PayPal Seller and Buyer accounts on Sandbox <i><a
-                        href="https://developer.paypal.com/webapps/developer/applications/accounts/create"
-                        target="_blank">here</a></i>.
+    <div class="span2"></div>
+    <div class="span5"></div>
+    <div class="span1"></div>
 
-                    <br>
-                    5) Make following changes in config/config.properties:<br>
-                    - If using your own Sandbox seller account, update PP_USER_SANDBOX, PP_PASSWORD_SANDBOX and
-                    PP_SIGNATURE_SANDBOX values with your sandbox credentials<br>
-                    - SANDBOX_FLAG: Kept true for working with Sandbox, it will be false for live.<br>
+    <page:script>
+        <script type="text/javascript">
+            function getRandomNumberInRange(min, max) {
+                return Math.floor(Math.random() * (max - min) + min);
+            }
 
-                </p>
+            var buyerCredentials = [{"email": "ron@hogwarts.com", "password": "qwer1234"},
+                {"email": "sallyjones1234@gmail.com", "password": "p@ssword1234"},
+                {"email": "joe@boe.com", "password": "123456789"},
+                {"email": "hermione@hogwarts.com", "password": "123456789"},
+                {"email": "lunalovegood@hogwarts.com", "password": "123456789"},
+                {"email": "ginnyweasley@hogwarts.com", "password": "123456789"},
+                {"email": "bellaswan@awesome.com", "password": "qwer1234"},
+                {"email": "edwardcullen@gmail.com", "password": "qwer1234"}];
+            var randomBuyer = getRandomNumberInRange(0, buyerCredentials.length);
 
-                <h4 id="incontext"> In-Context Checkout integration steps: </h4>
-                1) Copy the files and folders under 'Checkout' package to the same location where you have your shopping
-                cart page.
-                <br>
-                2) Copy the below &lt;form&gt; .. &lt;/form&gt; to your shopping cart page.
-                <br><br>
-                <pre><code>&lt;form action="/checkout" method="POST"&gt;
-      &lt;input type="hidden" name="PAYMENTREQUEST_0_AMT" value="10.00"&gt;&lt;/input&gt;
-      &lt;input type="hidden" name="currencyCodeType" value="USD"&gt;&lt;/input&gt;
-      &lt;input type="hidden" name="paymentType" value="Sale"&gt;&lt;/input&gt;
-      <i>&lt;!--Pass additional input parameters based on your shopping cart. For complete list of all the parameters <a
-              href="https://developer.paypal.com/docs/classic/api/merchant/DoDirectPayment_API_Operation_NVP/"
-              target=_blank>click here</a></i> --&gt;
-      &lt;input type="image" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Checkout with PayPal"&gt;&lt;/input&gt;
-&lt;/form&gt;</code></pre>
-                3) Include the following script on your shopping cart page:
-                <br><br>
-                <pre><code>
-&lt;script type="text/javascript"&gt;
-window.paypalCheckoutReady = function () {
-paypal.checkout.setup('Your merchant email id', {
-container: 'myContainer', //{String|HTMLElement|Array} where you want the PayPal button to reside
-environment: 'sandbox' //or 'production' depending on your environment
-});
-};
-&lt;/script&gt;
-&lt;script src="//www.paypalobjects.com/api/checkout.js" async&gt;&lt;/script&gt;
-</code></pre>
-                <br>
-                4) Open your browser and navigate to your Shopping cart page. Click on 'Checkout with PayPal' button and
-                complete the flow.<br>
-                5) Read more details on Express Checkout API <a
-                    href="https://developer.paypal.com/webapps/developer/docs/classic/products/#ec"
-                    target=_blank>here</a>
-                <br><br>
-                <h4 id="expresscheckout"> Express Checkout integration steps: </h4>
-                1) Copy the files and folders under 'Checkout' package to the same location where you have your shopping
-                cart page.
-                <br>
-                2) Copy the below &lt;form&gt; .. &lt;/form&gt; to your shopping cart page.
-                <br><br>
-                <pre><code>&lt;form action="/checkout" method="POST"&gt;
- &lt;input type="hidden" name="PAYMENTREQUEST_0_AMT" value="10.00"&gt;&lt;/input&gt;
- &lt;input type="hidden" name="currencyCodeType" value="USD"&gt;&lt;/input&gt;
- &lt;input type="hidden" name="paymentType" value="Sale"&gt;&lt;/input&gt;
- <i>&lt;!--Pass additional input parameters based on your shopping cart. For complete list of all the parameters <a
-         href="https://developer.paypal.com/webapps/developer/docs/classic/api/merchant/SetExpressCheckout_API_Operation_NVP/"
-         target=_blank>click here</a></i> --&gt;
- &lt;input type="image" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal"&gt;&lt;/input&gt;
-&lt;/form&gt;</code></pre>
-                3) In config/config.properties, uncomment the 'Express Checkout URLs for Sandbox' and comment out the
-                'In-Context in Express Checkout URLs for Sandbox'.
-                Do the same for the 'Live' URLs.<br>
-                4) Open your browser and navigate to your Shopping cart page. Click on 'Checkout with PayPal' button and
-                complete the flow.<br>
-                5) Read more details on Express Checkout API <a
-                    href="https://developer.paypal.com/webapps/developer/docs/classic/products/#ec"
-                    target=_blank>here</a>
+            document.getElementById("buyer_email").value = buyerCredentials[randomBuyer].email;
+            document.getElementById("buyer_password").value = buyerCredentials[randomBuyer].password;
+        </script>
 
-            </div>
-        </div>
-    </div>
-    <div class="span1">
-    </div>
-    <!--Script to dynamically choose a seller and buyer account to render on index page-->
-    <script type="text/javascript">
-        function getRandomNumberInRange(min, max) {
-            return Math.floor(Math.random() * (max - min) + min);
-        }
-
-        var buyerCredentials = [{"email": "ron@hogwarts.com", "password": "qwer1234"},
-            {"email": "sallyjones1234@gmail.com", "password": "p@ssword1234"},
-            {"email": "joe@boe.com", "password": "123456789"},
-            {"email": "hermione@hogwarts.com", "password": "123456789"},
-            {"email": "lunalovegood@hogwarts.com", "password": "123456789"},
-            {"email": "ginnyweasley@hogwarts.com", "password": "123456789"},
-            {"email": "bellaswan@awesome.com", "password": "qwer1234"},
-            {"email": "edwardcullen@gmail.com", "password": "qwer1234"}];
-        var randomBuyer = getRandomNumberInRange(0, buyerCredentials.length);
-
-        document.getElementById("buyer_email").value = buyerCredentials[randomBuyer].email;
-        document.getElementById("buyer_password").value = buyerCredentials[randomBuyer].password;
-    </script>
-
-    <script type="text/javascript">
-        window.paypalCheckoutReady = function () {
-            paypal.checkout.setup('${gvApiUserName}', {
-                container: 'myContainer',
-                environment: '${environment}'
-            });
-        };
-    </script>
-    <script src="http://www.paypalobjects.com/api/checkout.js" async></script>
+        <script type="text/javascript">
+            window.paypalCheckoutReady = function () {
+                paypal.checkout.setup('${gvApiUserName}', {
+                    container: 'myContainer',
+                    environment: '${environment}'
+                });
+            };
+        </script>
+        <script src="http://www.paypalobjects.com/api/checkout.js" async></script>
+    </page:script>
 </page:layout>

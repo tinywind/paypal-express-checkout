@@ -1,0 +1,98 @@
+<h4> README: </h4>
+<h5>BEFORE YOU GET STARTED:</h5>
+This code sample shows the new checkout flow called In-Context checkout experience. You need to meet the
+<a href="https://developer.paypal.com/webapps/developer/docs/classic/limited-release/express-checkout/enable/#eligibility-review"
+   target="_blank">eligibility criteria </a>
+to determine whether your integration will be a good candidate for In-Context checkout experience option. Please refer to the
+<a href="https://developer.paypal.com/webapps/developer/docs/classic/limited-release/express-checkout/enable/#eligibility-review"
+   target="_blank">eligibility criteria </a>.
+<br/>
+If you are eligible for In-Context checkout based on the eligibility requirements, please refer to the
+<a href="#incontext">'In-Context Checkout integration steps'</a>
+below. But, if you are not eligible, please refer to the
+<a href="#expresscheckout">'Express Checkout integration steps'</a> below.
+<br/>
+<h5> PRE-READ: </h5>
+<p>
+    1) Click on 'Checkout with PayPal' button and see the experience.
+    <br/>
+    2) If you get any Firewall warning, add rule to the Firewall to allow incoming connections for your
+    application.
+    <br/>
+    3) Checkout with PayPal using a buyer sandbox account provided on this page. And you're done!
+    <br/>
+    4) The sample code uses default sandbox credentials which are set in config/config.properties. You can
+    create your own credentials by creating PayPal Seller and Buyer accounts on Sandbox
+    <i>
+        <a href="https://developer.paypal.com/webapps/developer/applications/accounts/create" target="_blank">here</a>
+    </i>.
+    <br/>
+    5) Make following changes in config/config.properties:
+    <br/>
+    - If using your own Sandbox seller account, update PP_USER_SANDBOX, PP_PASSWORD_SANDBOX and
+    PP_SIGNATURE_SANDBOX values with your sandbox credentials
+    <br/>
+    - SANDBOX_FLAG: Kept true for working with Sandbox, it will be false for live.
+    <br/>
+</p>
+
+<h4 id="incontext"> In-Context Checkout integration steps: </h4>
+1) Copy the files and folders under 'Checkout' package to the same location where you have your shopping cart page.
+<br/>
+2) Copy the below &lt;form&gt; .. &lt;/form&gt; to your shopping cart page.
+<pre><code>
+      &lt;form action="/checkout" method="POST"&gt;
+            &lt;input type="hidden" name="PAYMENTREQUEST_0_AMT" value="10.00"&gt;&lt;/input&gt;
+            &lt;input type="hidden" name="currencyCodeType" value="USD"&gt;&lt;/input&gt;
+            &lt;input type="hidden" name="paymentType" value="Sale"&gt;&lt;/input&gt;
+            <i>&lt;!--Pass additional input parameters based on your shopping cart. For complete list of all the parameters
+                <a href="https://developer.paypal.com/docs/classic/api/merchant/DoDirectPayment_API_Operation_NVP/"
+                   target=_blank>click here</a>
+            </i> --&gt;
+            &lt;input type="image" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Checkout with PayPal"&gt;&lt;/input&gt;
+      &lt;/form&gt;</code></pre>
+<br/>
+3) Include the following script on your shopping cart page:
+<pre><code>
+      &lt;script type="text/javascript"&gt;
+            window.paypalCheckoutReady = function () {
+                  paypal.checkout.setup('Your merchant email id', {
+                        container: 'myContainer', //{String|HTMLElement|Array} where you want the PayPal button to reside
+                        environment: 'sandbox' //or 'production' depending on your environment
+                  });
+            };
+      &lt;/script&gt;
+      &lt;script src="//www.paypalobjects.com/api/checkout.js" async&gt;&lt;/script&gt;</code></pre>
+<br/>
+4) Open your browser and navigate to your Shopping cart page. Click on 'Checkout with PayPal' button and
+complete the flow.
+<br/>
+5) Read more details on Express Checkout API
+<a href="https://developer.paypal.com/webapps/developer/docs/classic/products/#ec" target=_blank>here</a>
+<br/><br/>
+<h4 id="expresscheckout"> Express Checkout integration steps: </h4>
+1) Copy the files and folders under 'Checkout' package to the same location where you have your shopping
+cart page.
+<br/>
+2) Copy the below &lt;form&gt; .. &lt;/form&gt; to your shopping cart page.
+<pre><code>
+      &lt;form action="/checkout" method="POST"&gt;
+            &lt;input type="hidden" name="PAYMENTREQUEST_0_AMT" value="10.00"&gt;&lt;/input&gt;
+            &lt;input type="hidden" name="currencyCodeType" value="USD"&gt;&lt;/input&gt;
+            &lt;input type="hidden" name="paymentType" value="Sale"&gt;&lt;/input&gt;
+            <i>&lt;!--Pass additional input parameters based on your shopping cart. For complete list of all the parameters
+                <a href="https://developer.paypal.com/webapps/developer/docs/classic/api/merchant/SetExpressCheckout_API_Operation_NVP/"
+                   target=_blank>click here</a>
+            </i> --&gt;
+            &lt;input type="image" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal"&gt;&lt;/input&gt;
+      &lt;/form&gt;</code></pre>
+<br/>
+3) In config/config.properties, uncomment the 'Express Checkout URLs for Sandbox' and comment out the
+'In-Context in Express Checkout URLs for Sandbox'.
+Do the same for the 'Live' URLs.
+<br/>
+4) Open your browser and navigate to your Shopping cart page. Click on 'Checkout with PayPal' button and
+complete the flow.
+<br/>
+5) Read more details on Express Checkout API
+<a href="https://developer.paypal.com/webapps/developer/docs/classic/products/#ec" target=_blank>here</a>

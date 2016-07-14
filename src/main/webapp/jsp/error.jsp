@@ -4,7 +4,7 @@
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
 
 <page:layout>
-<span class="span4"></span>
-<span class="span5">${error}</span>
-<span class="span3"></span>
+    <div class="span4"></div>
+    <div class="span5">${error}</div>
+    <div class="span3"></div>
 </page:layout>

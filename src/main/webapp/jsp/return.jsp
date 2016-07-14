@@ -59,7 +59,7 @@
                     purchase later. </h4>
                 Payment Status: ${result.get("PAYMENTINFO_0_PAYMENTSTATUS")}
                 <h3> Click <a href='https://www.sandbox.paypal.com/'>here </a> to go to PayPal site.</h3>
-                <!--Change to live PayPal site for production-->
+                <!--Change to live Paypal site for production-->
             </div>
         </c:otherwise>
     </c:choose>

@@ -57,46 +57,54 @@
             <tr>
                 <td><h3>Shipping Method</h3></td>
             </tr>
-            <form action="/return?page=return" name="order_confirm" method="POST">
-                <table>
-                    <tbody>
-                    <tr>
-                        <td>Shipping methods:</td>
-                        <td>
-                            <select onchange="updateAmount();" name="shipping_method" id="shipping_method"
-                                    style="width: 250px;" class="required-entry">
-                                <optgroup label="United Parcel Service" style="font-style:normal;">
-                                    <option value="2.00">
-                                        Worldwide Expedited - $2.00
-                                    </option>
-                                    <option value="3.00">
-                                        Worldwide Express Saver - $3.00
-                                    </option>
-                                </optgroup>
-                                <optgroup label="Flat Rate" style="font-style:normal;">
-                                    <option selected value="0.00">
-                                        Fixed - $0.00
-                                    </option>
-                                </optgroup>
-                            </select><br></td>
-                    </tr>
-                    <tr>
-                        <td><input type="Submit" name="confirm" alt="Check out with PayPal"
-                                   class="btn btn-primary btn-large" value="Confirm Order"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </form>
+            <tr>
+                <td>
+                    <form action="/return?page=return" method="post">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td>Shipping methods:</td>
+                                <td>
+                                    <select onchange="updateAmount();" name="shippingAmount" id="shippingAmount"
+                                            style="width: 250px;" class="required-entry">
+                                        <optgroup label="United Parcel Service" style="font-style:normal;">
+                                            <option value="2.00">
+                                                Worldwide Expedited - $2.00
+                                            </option>
+                                            <option value="3.00">
+                                                Worldwide Express Saver - $3.00
+                                            </option>
+                                        </optgroup>
+                                        <optgroup label="Flat Rate" style="font-style:normal;">
+                                            <option selected value="0.00">
+                                                Fixed - $0.00
+                                            </option>
+                                        </optgroup>
+                                    </select>
+                                    <br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button type="submit" class="btn btn-primary btn-large">
+                                        Confirm Order
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
-    <div class="span3">
-    </div>
+    <div class="span3"></div>
     <script>
         var origAmt =${result.get("PAYMENTREQUEST_0_AMT")};
         var oldshipAmt =${result.get("PAYMENTREQUEST_0_SHIPPINGAMT")};
         function updateAmount() {
-            var e = document.getElementById("shipping_method");
+            var e = document.getElementById("shippingAmount");
             var shipAmt = parseInt(e.options[e.selectedIndex].value);
             var newAmt = shipAmt + origAmt - oldshipAmt;
             document.getElementById("amount").innerHTML = newAmt + '.00';

@@ -4,7 +4,9 @@
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
 
 <page:layout>
-    <span class="span4"></span>
-    <span class="span5"><div class="hero-unit">You cancelled the order.</div></span>
-    <span class="span3"></span>
+    <div class="span4"></div>
+    <div class="span5">
+        <div class="hero-unit">You cancelled the order.</div>
+    </div>
+    <div class="span3"></div>
 </page:layout>
