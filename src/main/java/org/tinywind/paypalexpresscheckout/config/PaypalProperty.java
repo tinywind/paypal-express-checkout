@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@ConfigurationProperties(locations = {"paypal.properties"})
+@ConfigurationProperties(locations = {"paypal.yml"}, prefix = "paypal")
 public class PaypalProperty {
     @NestedConfigurationProperty
     private Map<String, String> properties = new HashMap<>();

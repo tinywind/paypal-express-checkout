@@ -2,10 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
+<%--@elvariable id="paypal" type="org.tinywind.paypalexpresscheckout.config.PaypalConfig"--%>
 
 <page:layout>
     <div class="span5">
-        <form class="form" action="/checkout" method="post">
+        <form class="form" action="/checkout-base" method="post">
             <div class="row-fluid">
                 <div class="span6 inner-span">
                     <!--Demo Product details -->
@@ -21,11 +22,11 @@
                         </tr>
                         <tr>
                             <td>Email-id:</td>
-                            <td><input type="text" id="buyer_email" name="buyer_email" readonly/></td>
+                            <td><input type="text" id="buyerEmail" name="buyerEmail" readonly/></td>
                         </tr>
                         <tr>
                             <td>Password:</td>
-                            <td><input type="text" id="buyer_password" name="buyer_password" readonly/></td>
+                            <td><input type="text" id="buyerPassword" name="buyerPassword" readonly/></td>
                         </tr>
                     </table>
                 </div>
@@ -67,7 +68,7 @@
                         </tr>
                         <tr>
                             <td>Shipping Discount:</td>
-                            <td><input type="text" name="shippingDiscount" value="-3.00" readonly/></td>
+                            <td><input type="text" name="shippingDiscount" value="3.00" readonly/></td>
                         </tr>
                         <tr>
                             <td>Insurance Amount:</td>
@@ -111,8 +112,9 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="Submit" alt="Proceed to Check out" class="btn btn-primary btn-large"
-                                       value="Proceed to Check out" name="checkout"/>
+                                <button type="submit" class="btn btn-primary btn-large">
+                                    Proceed to Check out
+                                </button>
                             </td>
                         </tr>
                     </table>
@@ -140,18 +142,17 @@
                 {"email": "edwardcullen@gmail.com", "password": "qwer1234"}];
             var randomBuyer = getRandomNumberInRange(0, buyerCredentials.length);
 
-            document.getElementById("buyer_email").value = buyerCredentials[randomBuyer].email;
-            document.getElementById("buyer_password").value = buyerCredentials[randomBuyer].password;
-        </script>
+            document.getElementById("buyerEmail").value = buyerCredentials[randomBuyer].email;
+            document.getElementById("buyerPassword").value = buyerCredentials[randomBuyer].password;
 
-        <script type="text/javascript">
             window.paypalCheckoutReady = function () {
-                paypal.checkout.setup('${gvApiUserName}', {
+                paypal.checkout.setup('${paypal.gvApiUserName}', {
                     container: 'myContainer',
-                    environment: '${environment}'
+                    environment: '${paypal.environment}'
                 });
             };
         </script>
+
         <script src="http://www.paypalobjects.com/api/checkout.js" async></script>
     </page:script>
 </page:layout>

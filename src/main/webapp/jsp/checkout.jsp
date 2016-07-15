@@ -2,14 +2,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
+<%--@elvariable id="paypal" type="org.tinywind.paypalexpresscheckout.config.PaypalConfig"--%>
 
 <page:layout>
     <div class="span2">
     </div>
     <div class="span5">
-        <form class="form" name="checkoutForm" action="/checkout" method="POST">
-            <input type="hidden" name="L_PAYMENTREQUEST_0_AMT"
-                   value="<c:out value="${fn:escapeXml(checkout.totalAmount)}" />">
+        <form class="form" action="/checkout" method="post">
+            <input type="hidden" name="lTotalAmount" value="${checkout.totalAmount}">
             <div class="row-fluid">
                 <div class="span6 inner-span">
                     <p class="lead">Shipping Address</p>
@@ -55,76 +55,58 @@
                         </tr>
                         <tr>
                             <td>Telephone:</td>
-                            <td><input type="text" name="PAYMENTREQUEST_0_SHIPTOPHONENUM" value="" maxlength="12"/></td>
+                            <td><input type="text" name="phone" value="" maxlength="12"/></td>
                         </tr>
 
                         <tr>
                             <td colspan="2"><p class="lead">Shipping Detail:</p></td>
                         </tr>
-                        <tr>
-                            <td>Shipping Type:</td>
-                            <td>
-                                <select name="shippingAmount" id="shippingAmount" style="width: 250px;"
-                                        class="required-entry">
-                                    <option value="">Please select a shipping method...</option>
-                                    <optgroup label="United Parcel Service" style="font-style:normal;">
-                                        <option value="2.00">
-                                            Worldwide Expedited - $2.00
-                                        </option>
-                                        <option value="3.00">
-                                            Worldwide Express Saver - $3.00
-                                        </option>
-                                    </optgroup>
-                                    <optgroup label="Flat Rate" style="font-style:normal;">
-                                        <option selected value="0.00">
-                                            Fixed - $0.00
-                                        </option>
-                                    </optgroup>
-                                </select>
-                                <br>
-                            </td>
-                        </tr>
+
                         <tr>
                             <td colspan="2"><p class="lead">Payment Methods:</p></td>
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <input checked id="paypal_payment_option" value="paypal_express" type="radio"
-                                       name="payment_method" title="PayPal Express Check out" class="radio">
+                                <input checked id="paypal_payment_option" value="PAYPAL_EXPRESS" type="radio"
+                                       name="paymentMethod" title="PayPal Express Check out" class="radio">
                                 <img src="https://fpdbs.paypal.com/dynamicimageweb?cmd=_dynamic-image&amp;buttontype=ecmark&amp;locale=en_US"
                                      alt="Acceptance Mark" class="v-middle">&nbsp;
                                 <a href="https://www.paypal.com/us/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside"
-                                   onclick="javascript:window.open('https://www.paypal.com/us/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, ,left=0, top=0, width=400, height=350'); return false;">What
-                                    is PayPal?</a>
+                                   onclick="javascript:window.open('https://www.paypal.com/us/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside',
+                                   'olcwhatispaypal',
+                                   'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, ,left=0, top=0, width=400, height=350');
+                                    return false;">
+                                    What is PayPal?</a>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" valign="top">
-                                <input readonly="" disabled id="p_method_paypal_express" value="credit_card"
-                                       type="radio" name="payment_method" title="PayPal Express Check out"
-                                       class="radio">&nbsp;Credit Card
-                            </td>
-                            <td>
+                                <input readonly="" disabled value="CREDIT_CARD" type="radio" name="paymentMethod"
+                                       title="PayPal Express Check out" class="radio">&nbsp;Credit Card
                             </td>
                         </tr>
                     </table>
-                    <input type="submit" id="placeOrderBtn" class="btn btn-primary btn-large" name="PlaceOrder"
-                           value="Place Order"/>
+
+                    <button type="submit" id="placeOrderBtn" class="btn btn-primary btn-large">
+                        Place Order
+                    </button>
                 </div>
             </div>
-
         </form>
     </div>
-    <script type="text/javascript">
-        window.paypalCheckoutReady = function () {
-            paypal.checkout.setup('${gvApiUserName}', {
-                button: 'placeOrderBtn',
-                environment: '${environment}',
-                condition: function () {
-                    return !!document.getElementById('paypal_payment_option').checked;
-                }
-            });
-        };
-    </script>
-    <script src="http://www.paypalobjects.com/api/checkout.js" async></script>
+
+    <page:script>
+        <script type="text/javascript">
+            window.paypalCheckoutReady = function () {
+                paypal.checkout.setup('${paypal.gvApiUserName}', {
+                    button: 'placeOrderBtn',
+                    environment: '${paypal.environment}',
+                    condition: function () {
+                        return !!document.getElementById('paypal_payment_option').checked;
+                    }
+                });
+            };
+        </script>
+        <script src="http://www.paypalobjects.com/api/checkout.js" async></script>
+    </page:script>
 </page:layout>

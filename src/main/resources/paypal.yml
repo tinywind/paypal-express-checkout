@@ -1,0 +1,25 @@
+paypal:
+  sandbox:
+  #if true, skip review page
+    flag: true
+    user: supersandy_api1.gmail.com
+    password: 1400525332
+    signature: AdUaGhfPganVo2IfGf2Ctordn94OASnvL6qF4D-pnHb6hEQCLBWKbzmq
+    checkout_url: https://www.sandbox.paypal.com/checkoutnow?token:
+    nvp_endpoint: https://api-3t.sandbox.paypal.com/nvp
+  seller:
+    email: supersandy@gmail.com
+  user: <seller_username_here>
+  password: <seller_password_here>
+  signature: <seller_signature_here>
+  useraction: false
+  checkout_url: https://www.paypal.com/checkoutnow?token:
+  nvp_endpoint: https://api-3t.paypal.com/nvp
+  proxy:
+    host: 127.0.0.1
+    port: 8080
+  api:
+    version: 109.0
+  sbn:
+    code: PP-DemoPortal-EC-IC-java
+  ssl: TLSv1.2
