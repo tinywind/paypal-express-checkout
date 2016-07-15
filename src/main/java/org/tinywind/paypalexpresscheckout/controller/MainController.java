@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.tinywind.paypalexpresscheckout.config.PaypalConfig;
-import org.tinywind.paypalexpresscheckout.config.PaypalProperty;
 import org.tinywind.paypalexpresscheckout.model.Checkout;
 import org.tinywind.paypalexpresscheckout.model.CheckoutRequest;
 import org.tinywind.paypalexpresscheckout.model.CheckoutResponse;
@@ -30,9 +29,8 @@ public class MainController {
     private static final String SESSION_CHECKOUT = "checkoutDetails";
 
     @Autowired
-    private PaypalProperty paypalProperty;
-    @Autowired
     private PaypalConfig paypal;
+
     @Autowired
     private PaypalCommunicationService paypalService;
 

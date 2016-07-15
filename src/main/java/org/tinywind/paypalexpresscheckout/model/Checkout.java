@@ -1,17 +1,19 @@
 package org.tinywind.paypalexpresscheckout.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.tinywind.paypalexpresscheckout.util.ReflectionUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by tinywind on 2016-07-14.
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Checkout extends PaypalCheckout {
     protected static final Map<String, CurrencyCodeType> CURRENCY_CODE_TYPE_OPTIONS = new HashMap<>();
@@ -82,30 +84,18 @@ public class Checkout extends PaypalCheckout {
             for (Field field : fields) {
                 Object value;
                 try {
-                    value = field.get(checkout);
-                } catch (Exception ignored) {
-                    try {
-                        String fieldName = field.getName();
-                        Method getter = klass.getDeclaredMethod("get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
-                        value = getter.invoke(checkout);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        continue;
-                    }
+                    value = ReflectionUtil.getValue(checkout, klass, field);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
                 }
 
                 if ((field.getType().equals(java.lang.String.class) && !StringUtils.isEmpty((String) value))
                         || (!field.getType().equals(java.lang.String.class) && value != null)) {
                     try {
-                        field.set(this, field.getType().cast(value));
-                    } catch (IllegalAccessException ignored) {
-                        try {
-                            String fieldName = field.getName();
-                            Method setter = klass.getDeclaredMethod("set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
-                            setter.invoke(this, field.getType().cast(value));
-                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                            e.printStackTrace();
-                        }
+                        ReflectionUtil.setValue(this, klass, field, value);
+                    } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                        e.printStackTrace();
                     }
                 }
             }
