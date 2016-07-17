@@ -20,89 +20,82 @@ import java.util.Objects;
 
 import static org.tinywind.paypalexpresscheckout.util.UrlQueryEncoder.encodeQueryParams;
 
-/**
- * Created by tinywind on 2016-07-13.
- */
 @Controller
-@RequestMapping("/")
 public class MainController {
     private static final String SESSION_CHECKOUT = "checkoutDetails";
 
     @Autowired
-    private PaypalConfig paypal;
+    private PaypalConfig paypalConfig;
 
     @Autowired
     private PaypalCommunicationService paypalService;
 
     @RequestMapping("")
     public String indexPage(@ModelAttribute Checkout checkout) {
-        return "checkout";
+        return "index";
     }
 
     @RequestMapping(value = "checkout-base", method = RequestMethod.POST)
-    public String checkoutBasePostPage(HttpSession session, @ModelAttribute CheckoutRequest checkout) {
-        session.setAttribute(SESSION_CHECKOUT, checkout);
-        return checkoutPage(checkout);
+    public String checkoutBasePostPage(HttpSession session, @ModelAttribute CheckoutRequest checkoutRequest) {
+        session.setAttribute(SESSION_CHECKOUT, checkoutRequest);
+        return checkoutPage(checkoutRequest);
     }
 
     @RequestMapping(value = "checkout", method = RequestMethod.GET)
-    public String checkoutPage(@ModelAttribute CheckoutRequest checkout) {
+    public String checkoutPage(@ModelAttribute CheckoutRequest checkoutRequest) {
         return "checkout";
     }
 
-    /**
-     * TODO: payerId가 checkout.jsp 페이지에서 날아올수 있다....
-     */
     @RequestMapping(value = "checkout", method = RequestMethod.POST)
-    public String checkoutPostPage(HttpSession session, Model model, @ModelAttribute CheckoutRequest checkout) {
-//        String returnURL = "/return?page=" + (paypal.getUserActionFlag() ? "return" : "review");
+    public String checkoutPostPage(HttpSession session, Model model, @ModelAttribute CheckoutRequest checkoutRequest) {
+//        String returnURL = "/return?page=" + (paypalConfig.getUserActionFlag() ? "return" : "review");
         String cancelURL = "/cancel";
         String returnURL = "/lightboxreturn";
 
-        checkout.set((Checkout) session.getAttribute(SESSION_CHECKOUT));
-        if (checkout.getShippingAmount() != null)
-            checkout.setTotalAmount(checkout.getTotalAmount() + (checkout.getShippingAmount() - checkout.getShippingDiscount()));
+        checkoutRequest.set((Checkout) session.getAttribute(SESSION_CHECKOUT));
+        if (checkoutRequest.getShippingAmount() != null)
+            checkoutRequest.setTotalAmount(checkoutRequest.getTotalAmount() + (checkoutRequest.getShippingAmount() - checkoutRequest.getShippingDiscount()));
 
-        session.setAttribute(SESSION_CHECKOUT, checkout);
-        final CheckoutResponse response = paypalService.callShortcutExpressCheckout(checkout, returnURL, cancelURL);
+        session.setAttribute(SESSION_CHECKOUT, checkoutRequest);
+        final CheckoutResponse response = paypalService.callShortcutExpressCheckout(checkoutRequest, returnURL, cancelURL);
         System.out.println(response.toString());
 
         if (!response.isAck()) return errorPage(model, response);
 
-        checkout.setToken(response.getToken());
+        checkoutRequest.setToken(response.getToken());
         // FIXME ??
-        return "redirect:/" + paypal.getPaypalUrl() + response.getToken() + (paypal.getUserActionFlag() ? "&useraction=commit" : "");
+        return "redirect:/" + paypalConfig.getPaypalUrl() + response.getToken() + (paypalConfig.getUserActionFlag() ? "&useraction=commit" : "");
     }
 
     @RequestMapping("return")
-    public String returnPage(HttpSession session, Model model, HttpServletRequest request, CheckoutRequest checkout, String page) {
-        if (!StringUtils.isEmpty(checkout.getToken())) {
-            final CheckoutResponse response = paypalService.getShippingDetails(checkout.getToken());
+    public String returnPage(HttpSession session, Model model, HttpServletRequest request, CheckoutRequest checkoutRequest, String page) {
+        if (!StringUtils.isEmpty(checkoutRequest.getToken())) {
+            final CheckoutResponse response = paypalService.getShippingDetails(checkoutRequest.getToken());
             System.out.println(response.toString());
             model.addAttribute("response", response);
 
             if (!response.isAck()) return errorPage(model, response);
-            checkout.setPayerId(response.getPayerId());
+            checkoutRequest.setPayerId(response.getPayerId());
         }
 
         CheckoutRequest checkoutBackup = (CheckoutRequest) session.getAttribute(SESSION_CHECKOUT);
-        checkoutBackup.set(checkout);
-        checkout = checkoutBackup;
-        model.addAttribute("request", checkout);
+        checkoutBackup.set(checkoutRequest);
+        checkoutRequest = checkoutBackup;
+        model.addAttribute("request", checkoutRequest);
 
-        if (checkout.getShippingAmount() != null)
-            checkout.setTotalAmount(checkout.getTotalAmount() + (checkout.getShippingAmount() - checkout.getShippingDiscount()));
-        System.out.println(checkout.toString());
+        if (checkoutRequest.getShippingAmount() != null)
+            checkoutRequest.setTotalAmount(checkoutRequest.getTotalAmount() + (checkoutRequest.getShippingAmount() - checkoutRequest.getShippingDiscount()));
+        System.out.println(checkoutRequest.toString());
 
         if (Objects.equals("return", page)) {
-            final CheckoutResponse response = paypalService.confirmPayment(checkout, request.getServerName());
+            final CheckoutResponse response = paypalService.confirmPayment(checkoutRequest, request.getServerName());
             System.out.println(response.toString());
 
             if (!response.isAck()) return errorPage(model, response);
 
             model.addAttribute("response", response);
 
-            model.addAttribute("byCreditCard", checkout.getPaymentMethod() == CheckoutRequest.PaymentMethod.CREDIT_CARD);
+            model.addAttribute("byCreditCard", checkoutRequest.getPaymentMethod() == CheckoutRequest.PaymentMethod.CREDIT_CARD);
             session.invalidate();
             return "return";
         }
@@ -125,8 +118,7 @@ public class MainController {
                 "<br>Error Severity Code: " + error.getSeverityCode());
     }
 
-    //    @RequestMapping("error")
-    public String errorPage(Model model, String error) {
+    private String errorPage(Model model, String error) {
         model.addAttribute("error", error);
         return "error";
     }

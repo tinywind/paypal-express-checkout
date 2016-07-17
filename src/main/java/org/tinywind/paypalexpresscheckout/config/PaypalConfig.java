@@ -28,18 +28,17 @@ public class PaypalConfig {
     public void init() throws YamlException {
         final YamlReader reader = new YamlReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("paypal.yml")));
         final Map<String, Object> prop = (Map<String, Object>) reader.read();
-
         final Map<String, Object> setting = (Map<String, Object>) prop.get("setting");
         final Map<String, Object> account = (Map<String, Object>) prop.get("account");
-        Map<String, Object> accountInfo;
+        Map<String, Object> accountInfoSender;
         if ("true".equalsIgnoreCase((String) setting.get("flag"))) {
             environment = "sandbox";
-            accountInfo = (Map<String, Object>) account.get("sandbox");
+            accountInfoSender = (Map<String, Object>) account.get("sandbox");
         } else {
             environment = "production";
-            accountInfo = (Map<String, Object>) account.get("paypal");
+            accountInfoSender = (Map<String, Object>) account.get("paypal");
         }
-
+        final Map<String, Object> accountInfo = accountInfoSender;
         gvApiUserName = (String) accountInfo.get("user");
         gvApiPassword = (String) accountInfo.get("password");
         gvApiSignature = (String) accountInfo.get("signature");

@@ -1,33 +1,34 @@
 package org.tinywind.paypalexpresscheckout.service;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tinywind.paypalexpresscheckout.config.PaypalConfig;
 import org.tinywind.paypalexpresscheckout.model.Checkout;
-import org.tinywind.paypalexpresscheckout.model.CheckoutRequest;
 import org.tinywind.paypalexpresscheckout.model.CheckoutResponse;
+import org.tinywind.paypalexpresscheckout.util.ReflectionUtil;
 
-import java.io.*;
-import java.lang.reflect.Constructor;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import static org.tinywind.paypalexpresscheckout.util.UrlQueryEncoder.encodeQueryParams;
 
-/**
- * Created by tinywind on 2016-07-14.
- */
 @Service
 public class PaypalCommunicationService {
+    private static final Logger logger = LoggerFactory.getLogger(PaypalCommunicationService.class);
+
     @Autowired
-    private PaypalConfig paypal;
+    private PaypalConfig paypalConfig;
 
     public CheckoutResponse callShortcutExpressCheckout(Checkout checkout, String returnURL, String cancelURL) {
         Map<String, Object> params = new HashMap<>();
@@ -35,7 +36,7 @@ public class PaypalCommunicationService {
         params.put("RETURNURL", returnURL);
         params.put("CANCELURL", cancelURL);
         params.put("PAYMENTREQUEST_0_AMT", checkout.getTotalAmount());
-        params.put("PAYMENTREQUEST_0_CURRENCYCODE", checkout.getCurrencyCodeType());
+        params.put("PAYMENTREQUEST_0_CURRENCYCODE", checkout.getCurrencyCode());
         params.put("PAYMENTREQUEST_0_ITEMAMT", checkout.getItemAmount());
         params.put("PAYMENTREQUEST_0_TAXAMT", checkout.getTaxAmount());
         params.put("PAYMENTREQUEST_0_SHIPPINGAMT", checkout.getShippingAmount());
@@ -62,13 +63,13 @@ public class PaypalCommunicationService {
         Map<String, Object> params = new HashMap<>();
 
         params.put("IPADDRESS", serverName);
-        params.put("PAYMENTREQUEST_0_SELLERPAYPALACCOUNTID", paypal.getSellerEmail());
+        params.put("PAYMENTREQUEST_0_SELLERPAYPALACCOUNTID", paypalConfig.getSellerEmail());
 
         params.put("TOKEN", checkout.getToken());
         params.put("PAYERID", checkout.getPayerId());
         params.put("PAYMENTREQUEST_0_PAYMENTACTION", checkout.getPaymentType());
         params.put("PAYMENTREQUEST_0_AMT", checkout.getTotalAmount());
-        params.put("PAYMENTREQUEST_0_CURRENCYCODE", checkout.getCurrencyCodeType());
+        params.put("PAYMENTREQUEST_0_CURRENCYCODE", checkout.getCurrencyCode());
         params.put("PAYMENTREQUEST_0_ITEMAMT", checkout.getItemAmount());
         params.put("PAYMENTREQUEST_0_TAXAMT", checkout.getTaxAmount());
         params.put("PAYMENTREQUEST_0_SHIPPINGAMT", checkout.getShippingAmount());
@@ -81,17 +82,17 @@ public class PaypalCommunicationService {
 
     private CheckoutResponse httpcall(String methodName, Map<String, Object> params) {
         params.put("METHOD", methodName);
-        params.put("VERSION", paypal.getGvVersion());
-        params.put("USER", paypal.getGvApiUserName());
-        params.put("PWD", paypal.getGvApiPassword());
-        params.put("SIGNATURE", paypal.getGvApiSignature());
-        params.put("BUTTONSOURCE", paypal.getGvBNCode());
+        params.put("VERSION", paypalConfig.getGvVersion());
+        params.put("USER", paypalConfig.getGvApiUserName());
+        params.put("PWD", paypalConfig.getGvApiPassword());
+        params.put("SIGNATURE", paypalConfig.getGvApiSignature());
+        params.put("BUTTONSOURCE", paypalConfig.getGvBNCode());
 
         String agent = "Mozilla/4.0";
         StringBuilder respText = new StringBuilder("");
 
         try {
-            URL postURL = new URL(paypal.getGvApiEndpoint());
+            URL postURL = new URL(paypalConfig.getGvApiEndpoint());
             HttpURLConnection conn = (HttpURLConnection) postURL.openConnection();
 
             conn.setDoInput(true);
@@ -128,15 +129,16 @@ public class PaypalCommunicationService {
         while (stTok.hasMoreTokens()) {
             final StringTokenizer stInternalTokenizer = new StringTokenizer(stTok.nextToken(), "=");
             if (stInternalTokenizer.countTokens() == 2) {
+                String key = null, value = null;
                 try {
-                    final String key = URLDecoder.decode(stInternalTokenizer.nextToken(), "UTF-8");
-                    final String value = URLDecoder.decode(stInternalTokenizer.nextToken(), "UTF-8");
+                    key = URLDecoder.decode(stInternalTokenizer.nextToken(), "UTF-8");
+                    value = URLDecoder.decode(stInternalTokenizer.nextToken(), "UTF-8");
 
-                    final Field field = Checkout.class.getDeclaredField(Checkout.checkoutVarName(key));
-                    final Constructor<? extends Field> constructor = field.getClass().getConstructor(String.class);
-                    field.set(nvp, constructor.newInstance(value));
-                } catch (UnsupportedEncodingException | NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                    e.printStackTrace();
+                    final Field field = CheckoutResponse.class.getDeclaredField(Checkout.checkoutVarName(key));
+                    ReflectionUtil.setValue(nvp, CheckoutResponse.class, field, value);
+                } catch (Exception e) {
+                    logger.error(e.getClass().getName() + ": " + e.getMessage());
+                    if (key != null) logger.debug("    key: " + key + ", value: " + value);
                 }
             }
         }

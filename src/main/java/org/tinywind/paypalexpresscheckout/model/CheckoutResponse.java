@@ -3,9 +3,6 @@ package org.tinywind.paypalexpresscheckout.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * Created by tinywind on 2016-07-14.
- */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CheckoutResponse extends PaypalCheckout {
@@ -44,8 +41,18 @@ public class CheckoutResponse extends PaypalCheckout {
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTINFO_0_PAYMENTSTATUS", "paymentStatus");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTINFO_0_PAYMENTTYPE", "paymentType");
 
+        PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("TIMESTAMP", "timestamp");
+        PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("CORRELATIONID", "correlationId");
+        PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("VERSION", "version");
+        PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("BUILD", "build");
+
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.forEach((k, v) -> PAYPAL_VARIABLE_NAME_REVERSE_CONVERT_MAP.put(v, k));
     }
+
+    protected String timestamp;
+    protected String correlationId;
+    protected String version;
+    protected String build;
 
     protected AcknowledgementType acknowledgement;
     protected String token;
@@ -82,16 +89,24 @@ public class CheckoutResponse extends PaypalCheckout {
 
     public boolean isAck() {
         return acknowledgement != null
-//                && (acknowledgement != AcknowledgementType.SUCCESS || acknowledgement != AcknowledgementType.SUCCESS_WITH_WARNING)
-                ;
+                && (acknowledgement == AcknowledgementType.SUCCESS || acknowledgement == AcknowledgementType.SUCCESS_WITH_WARNING);
     }
 
-    private enum AcknowledgementType {
-        SUCCESS("SUCCESS"), SUCCESS_WITH_WARNING("SUCCESSWITHWARNING");
+    @SuppressWarnings("all")
+    public enum AcknowledgementType {
+        SUCCESS("Success"), SUCCESS_WITH_WARNING("SuccessWithWarning"), FAILURE("Failure");
         String string;
 
         AcknowledgementType(String string) {
             this.string = string;
+        }
+
+        public static AcknowledgementType stringOf(String s) {
+            for (AcknowledgementType type : AcknowledgementType.values()) {
+                if (type.string.equalsIgnoreCase(s))
+                    return type;
+            }
+            throw new IllegalArgumentException("No enum constant for " + s);
         }
 
         public String getString() {

@@ -4,17 +4,17 @@
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
 
 <page:html>
-    <page:head>
-    </page:head>
+    <page:head/>
     <page:body>
-        <div class="container-fluid">
-            <div class="well">
+        <div class="container">
+            <div class="well hidden-xs">
                 <h2 class="text-center">Checkout with PayPal Demo</h2>
             </div>
-            <div class="row-fluid">
+            <div class="row">
                 <jsp:doBody/>
             </div>
         </div>
+        <page:js/>
         <page:scripts method="pop"/>
     </page:body>
 </page:html>

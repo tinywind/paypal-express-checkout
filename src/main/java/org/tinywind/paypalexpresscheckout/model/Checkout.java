@@ -6,21 +6,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.tinywind.paypalexpresscheckout.util.ReflectionUtil;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by tinywind on 2016-07-14.
- */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Checkout extends PaypalCheckout {
-    protected static final Map<String, CurrencyCodeType> CURRENCY_CODE_TYPE_OPTIONS = new HashMap<>();
+    protected static final Map<String, CurrencyCode> CURRENCY_CODE_OPTIONS = new HashMap<>();
     protected static final Map<String, PaymentType> PAYMENT_TYPE_OPTIONS = new HashMap<>();
 
     static {
-        for (CurrencyCodeType type : CurrencyCodeType.values()) CURRENCY_CODE_TYPE_OPTIONS.put(type.getString(), type);
+        for (CurrencyCode type : CurrencyCode.values()) CURRENCY_CODE_OPTIONS.put(type.getString(), type);
         for (PaymentType type : PaymentType.values()) PAYMENT_TYPE_OPTIONS.put(type.getString(), type);
 
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTREQUEST_0_ITEMAMT", "itemAmount");
@@ -30,7 +26,7 @@ public class Checkout extends PaypalCheckout {
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTREQUEST_0_SHIPDISCAMT", "shippingDiscount");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTREQUEST_0_INSURANCEAMT", "insuranceAmount");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTREQUEST_0_AMT", "totalAmount");
-        PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTREQUEST_0_CURRENCYCODE", "currencyCodeType");
+        PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTREQUEST_0_CURRENCYCODE", "currencyCode");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYMENTREQUEST_0_PAYMENTACTION", "paymentType");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("L_PAYMENTREQUEST_0_NAME0", "productName");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("L_PAYMENTREQUEST_0_NUMBER0", "orderNumber");
@@ -61,14 +57,14 @@ public class Checkout extends PaypalCheckout {
     protected Double shippingDiscount;
     protected Double insuranceAmount;
     protected Double totalAmount;
-    protected CurrencyCodeType currencyCodeType;
+    protected CurrencyCode currencyCode;
     protected PaymentType paymentType;
 
     protected String payerId; // from Paypal server
     protected String token; // from Paypal server
 
-    public Map<String, CurrencyCodeType> getCurrencyCodeTypeOptions() {
-        return CURRENCY_CODE_TYPE_OPTIONS;
+    public Map<String, CurrencyCode> getCurrencyCodeOptions() {
+        return CURRENCY_CODE_OPTIONS;
     }
 
     public Map<String, PaymentType> getPaymentTypeOptions() {
@@ -82,6 +78,8 @@ public class Checkout extends PaypalCheckout {
         {
             final Field[] fields = klass.getDeclaredFields();
             for (Field field : fields) {
+                if ((field.getModifiers() & java.lang.reflect.Modifier.FINAL) != 0) continue;
+
                 Object value;
                 try {
                     value = ReflectionUtil.getValue(checkout, klass, field);
@@ -94,7 +92,7 @@ public class Checkout extends PaypalCheckout {
                         || (!field.getType().equals(java.lang.String.class) && value != null)) {
                     try {
                         ReflectionUtil.setValue(this, klass, field, value);
-                    } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -102,11 +100,11 @@ public class Checkout extends PaypalCheckout {
         }
     }
 
-    private enum CurrencyCodeType {
+    private enum CurrencyCode {
         USD("USD"), AUD("AUD"), BRL("BRL"), CAD("CAD"), CZK("CZK"), DKK("DKK"), EUR("EUR"), HKD("HKD"), HUF("HUF"), ILS("ILS"), JPY("JPY"), NOK("NOK"), MXN("MXN"), NZD("NZD"), PHP("PHP"), PLN("PLN"), GBP("GBP"), SGD("SGD"), SEK("SEK"), CHF("CHF"), TWD("TWD"), THB("THB"), TRY("TRY");
         String string;
 
-        CurrencyCodeType(String string) {
+        CurrencyCode(String string) {
             this.string = string;
         }
 

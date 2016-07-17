@@ -1,12 +1,12 @@
 spring:
     mvc:
-        view:
-            prefix: /WEB-INF/jsp/
-            suffix: .jsp
+          view:
+                prefix: /WEB-INF/jsp/
+                suffix: .jsp
 logging:
-  level:
-      kr.tinywind: TRACE
+    level:
+          org.tinywind: TRACE
 server:
     error:
-        whitelabel:
-            enabled: false
+          whitelabel:
+                enabled: false

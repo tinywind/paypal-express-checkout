@@ -6,9 +6,8 @@
 <%--@elvariable id="response" type="org.tinywind.paypalexpresscheckout.model.CheckoutResponse"--%>
 
 <page:layout>
-    <div class="span4"></div>
-    <div class="span5">
-        <table>
+    <div class="col-xs-12">
+        <table class="table table-middle table-striped" style="width: 100%;">
             <tbody>
             <tr>
                 <td><h4>Shipping Address</h4></td>
@@ -67,8 +66,8 @@
                             <tr>
                                 <td>Shipping methods:</td>
                                 <td>
-                                    <select onchange="updateAmount();" name="shippingAmount" id="shippingAmount"
-                                            style="width: 250px;" class="required-entry">
+                                    <select class="form-control" onchange="updateAmount();" name="shippingAmount"
+                                            id="shippingAmount" style="width: 250px;">
                                         <optgroup label="United Parcel Service" style="font-style:normal;">
                                             <option value="2.00">
                                                 Worldwide Expedited - $2.00
@@ -91,7 +90,7 @@
                                     <button type="submit" class="btn btn-primary btn-large">
                                         Confirm Order
                                     </button>
-                                    <input type="hidden" name="confirm" value="true"/>
+                                    <input class="form-control" type="hidden" name="confirm" value="true"/>
                                 </td>
                             </tr>
                             </tbody>
@@ -102,18 +101,19 @@
             </tbody>
         </table>
     </div>
-    <div class="span3"></div>
-    <script>
-        var requestTotalAmount =${request.totalAmount};
-        var requestShippingAmount =${request.shippingAmount};
-        function updateAmount() {
-            var e = document.getElementById("shippingAmount");
-            var shipAmt = parseInt(e.options[e.selectedIndex].value);
-            var newAmt = shipAmt + requestTotalAmount - requestShippingAmount;
-            document.getElementById("amount").innerHTML = newAmt + '.00';
-        }
-        $(document).ready(function () {
-            updateAmount();
-        });
-    </script>
+    <page:scripts>
+        <script>
+            var requestTotalAmount =${request.totalAmount};
+            var requestShippingAmount =${request.shippingAmount};
+            function updateAmount() {
+                var e = document.getElementById("shippingAmount");
+                var shipAmt = parseInt(e.options[e.selectedIndex].value);
+                var newAmt = shipAmt + requestTotalAmount - requestShippingAmount;
+                document.getElementById("amount").innerHTML = newAmt + '.00';
+            }
+            $(document).ready(function () {
+                updateAmount();
+            });
+        </script>
+    </page:scripts>
 </page:layout>

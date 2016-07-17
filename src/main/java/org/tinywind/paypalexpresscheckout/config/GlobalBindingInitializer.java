@@ -12,7 +12,7 @@ public class GlobalBindingInitializer {
     private TagExtender tagExtender;
 
     @Autowired
-    private PaypalConfig paypal;
+    private PaypalConfig paypalConfig;
 
     @ModelAttribute
     public TagExtender tagExtender() {
@@ -20,7 +20,7 @@ public class GlobalBindingInitializer {
     }
 
     @ModelAttribute
-    public PaypalConfig paypal() {
-        return paypal;
+    public PaypalConfig paypalConfig() {
+        return paypalConfig;
     }
 }
