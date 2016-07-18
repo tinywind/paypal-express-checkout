@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.tinywind.paypalexpresscheckout.config.PaypalConfig;
 import org.tinywind.paypalexpresscheckout.model.Checkout;
 import org.tinywind.paypalexpresscheckout.model.CheckoutRequest;
@@ -38,37 +39,39 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping(value = "checkout-base", method = RequestMethod.POST)
-    public String checkoutBasePostPage(HttpSession session, @ModelAttribute CheckoutRequest checkoutRequest) {
-        session.setAttribute(SESSION_CHECKOUT, checkoutRequest);
-        return checkoutPage(checkoutRequest);
-    }
-
     @RequestMapping(value = "checkout", method = RequestMethod.GET)
     public String checkoutPage(@ModelAttribute CheckoutRequest checkoutRequest) {
         return "checkout";
     }
 
     @RequestMapping(value = "checkout", method = RequestMethod.POST)
-    public String checkoutPostPage(HttpSession session, Model model, @ModelAttribute CheckoutRequest checkoutRequest) {
+    public String checkoutPostPage(HttpServletRequest request, HttpSession session, Model model, @ModelAttribute CheckoutRequest checkoutRequest, @RequestParam Boolean shortcut) {
+        final Checkout backup = (Checkout) session.getAttribute(SESSION_CHECKOUT);
+        if (!shortcut && backup == null) {
+            session.setAttribute(SESSION_CHECKOUT, checkoutRequest);
+            return checkoutPage(checkoutRequest);
+        }
+
 //        String returnURL = "/return?page=" + (paypalConfig.getUserActionFlag() ? "return" : "review");
-        String cancelURL = "/cancel";
-        String returnURL = "/lightboxreturn";
+        final String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        final String cancelURL = basePath + "/cancel";
+        final String returnURL = basePath + "/lightboxreturn";
+        final String logoImage = basePath + "/img/logo.jpg";
 
-        checkoutRequest.set((Checkout) session.getAttribute(SESSION_CHECKOUT));
-        if (checkoutRequest.getShippingAmount() != null)
-            checkoutRequest.setTotalAmount(checkoutRequest.getTotalAmount() + (checkoutRequest.getShippingAmount() - checkoutRequest.getShippingDiscount()));
-
+        checkoutRequest.set(backup);
         session.setAttribute(SESSION_CHECKOUT, checkoutRequest);
+        checkoutRequest.calculateTotalAmount();
+        checkoutRequest.setLogoImage(logoImage);
         logger.trace(checkoutRequest.toString());
-        final CheckoutResponse response = paypalService.callShortcutExpressCheckout(checkoutRequest, returnURL, cancelURL);
+        final CheckoutResponse response = (shortcut
+                ? paypalService.callShortcutExpressCheckout(checkoutRequest, returnURL, cancelURL)
+                : paypalService.callMarkExpressCheckout(checkoutRequest, returnURL, cancelURL));
         logger.trace(response.toString());
 
         if (!response.isAck()) return errorPage(model, response);
 
         checkoutRequest.setToken(response.getToken());
-        // FIXME ??
-        return "redirect:/" + paypalConfig.getPaypalUrl() + response.getToken() + (paypalConfig.getUserActionFlag() ? "&useraction=commit" : "");
+        return "redirect:" + paypalConfig.getPaypalUrl() + response.getToken() + (paypalConfig.getUserActionFlag() ? "&useraction=commit" : "");
     }
 
     @RequestMapping("return")
@@ -86,10 +89,7 @@ public class MainController {
         CheckoutRequest checkoutBackup = (CheckoutRequest) session.getAttribute(SESSION_CHECKOUT);
         checkoutBackup.set(checkoutRequest);
         checkoutRequest = checkoutBackup;
-        model.addAttribute("request", checkoutRequest);
-
-        if (checkoutRequest.getShippingAmount() != null)
-            checkoutRequest.setTotalAmount(checkoutRequest.getTotalAmount() + (checkoutRequest.getShippingAmount() - checkoutRequest.getShippingDiscount()));
+        model.addAttribute("checkoutRequest", checkoutRequest);
 
         if (Objects.equals("return", page)) {
             logger.trace(checkoutRequest.toString());
@@ -98,7 +98,7 @@ public class MainController {
 
             if (!response.isAck()) return errorPage(model, response);
 
-            model.addAttribute("response", response);
+            model.addAttribute("checkoutResponse", response);
             model.addAttribute("byCreditCard", checkoutRequest.getPaymentMethod() == CheckoutRequest.PaymentMethod.CREDIT_CARD);
             session.invalidate();
             return "return";

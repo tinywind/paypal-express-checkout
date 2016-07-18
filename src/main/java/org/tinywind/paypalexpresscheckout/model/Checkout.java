@@ -3,6 +3,9 @@ package org.tinywind.paypalexpresscheckout.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tinywind.paypalexpresscheckout.service.PaypalCommunicationService;
 import org.tinywind.paypalexpresscheckout.util.ReflectionUtil;
 
 import java.lang.reflect.Field;
@@ -12,6 +15,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Checkout extends PaypalCheckout {
+    private static final Logger logger = LoggerFactory.getLogger(Checkout.class);
     protected static final Map<String, CurrencyCode> CURRENCY_CODE_OPTIONS = new HashMap<>();
     protected static final Map<String, PaymentType> PAYMENT_TYPE_OPTIONS = new HashMap<>();
 
@@ -32,7 +36,7 @@ public class Checkout extends PaypalCheckout {
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("L_PAYMENTREQUEST_0_NUMBER0", "orderNumber");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("L_PAYMENTREQUEST_0_DESC0", "productDescription");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("L_PAYMENTREQUEST_0_QTY0", "quantity");
-        PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("L_PAYMENTREQUEST_0_AMT", "lTotalAmount");
+        PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("L_PAYMENTREQUEST_0_AMT0", "lTotalAmount");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("LOGOIMG", "logoImage");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("PAYERID", "payerId");
         PAYPAL_VARIABLE_NAME_CONVERT_MAP.put("TOKEN", "token");
@@ -48,7 +52,6 @@ public class Checkout extends PaypalCheckout {
     protected String orderNumber;
     protected String productDescription;
     protected Integer quantity;
-    protected Double lTotalAmount;
 
     protected Double itemAmount;
     protected Double taxAmount;
@@ -57,6 +60,7 @@ public class Checkout extends PaypalCheckout {
     protected Double shippingDiscount;
     protected Double insuranceAmount;
     protected Double totalAmount;
+    protected Double lTotalAmount;
     protected CurrencyCode currencyCode;
     protected PaymentType paymentType;
 
@@ -71,6 +75,11 @@ public class Checkout extends PaypalCheckout {
         return PAYMENT_TYPE_OPTIONS;
     }
 
+    public void calculateTotalAmount() {
+//        shippingAmount = 0d;
+        lTotalAmount = itemAmount * quantity;
+        totalAmount = lTotalAmount + taxAmount + shippingAmount + handlingAmount + shippingDiscount + insuranceAmount;
+    }
 
     public void set(Checkout checkout) {
 //        for (Class<?> klass = this.getClass(); klass != null; klass = klass.getSuperclass())
@@ -84,7 +93,7 @@ public class Checkout extends PaypalCheckout {
                 try {
                     value = ReflectionUtil.getValue(checkout, klass, field);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.debug(e.getClass().getName() + ": " + e.getMessage());
                     continue;
                 }
 
@@ -93,7 +102,7 @@ public class Checkout extends PaypalCheckout {
                     try {
                         ReflectionUtil.setValue(this, klass, field, value);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.debug(e.getClass().getName() + ": " + e.getMessage());
                     }
                 }
             }

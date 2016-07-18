@@ -6,7 +6,7 @@
 
 <page:layout>
     <form class="form-horizontal col-xs-12" action="/checkout" method="post">
-        <input class="form-control" type="hidden" name="lTotalAmount" value="${checkoutRequest.totalAmount}">
+        <%--<input class="form-control" type="hidden" name="lTotalAmount" value="${checkoutRequest.totalAmount}">--%>
         <p class="lead">Shipping Address</p>
         <table class="table table-middle table-striped" style="width: 100%;">
             <tr>

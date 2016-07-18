@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tinywind.paypalexpresscheckout.config.PaypalConfig;
 import org.tinywind.paypalexpresscheckout.model.Checkout;
+import org.tinywind.paypalexpresscheckout.model.CheckoutRequest;
 import org.tinywind.paypalexpresscheckout.model.CheckoutResponse;
 import org.tinywind.paypalexpresscheckout.util.ReflectionUtil;
 
@@ -30,11 +31,12 @@ public class PaypalCommunicationService {
     @Autowired
     private PaypalConfig paypalConfig;
 
-    public CheckoutResponse callShortcutExpressCheckout(Checkout checkout, String returnURL, String cancelURL) {
+    private Map<String, Object> getSetExpressCheckoutParams(Checkout checkout, String returnURL, String cancelURL) {
         Map<String, Object> params = new HashMap<>();
 
         params.put("RETURNURL", returnURL);
         params.put("CANCELURL", cancelURL);
+        params.put("LOGOIMG", checkout.getLogoImage());
         params.put("PAYMENTREQUEST_0_AMT", checkout.getTotalAmount());
         params.put("PAYMENTREQUEST_0_CURRENCYCODE", checkout.getCurrencyCode());
         params.put("PAYMENTREQUEST_0_ITEMAMT", checkout.getItemAmount());
@@ -43,14 +45,34 @@ public class PaypalCommunicationService {
         params.put("PAYMENTREQUEST_0_HANDLINGAMT", checkout.getHandlingAmount());
         params.put("PAYMENTREQUEST_0_SHIPDISCAMT", checkout.getShippingDiscount());
         params.put("PAYMENTREQUEST_0_INSURANCEAMT", checkout.getInsuranceAmount());
+        params.put("PAYMENTREQUEST_0_PAYMENTACTION", checkout.getPaymentType());
         params.put("L_PAYMENTREQUEST_0_NAME0", checkout.getProductName());
         params.put("L_PAYMENTREQUEST_0_NUMBER0", checkout.getOrderNumber());
         params.put("L_PAYMENTREQUEST_0_DESC0", checkout.getProductDescription());
         params.put("L_PAYMENTREQUEST_0_AMT0", checkout.getLTotalAmount());
         params.put("L_PAYMENTREQUEST_0_QTY0", checkout.getQuantity());
-        params.put("LOGOIMG", checkout.getLogoImage());
+
+        return params;
+    }
+
+    public CheckoutResponse callMarkExpressCheckout(CheckoutRequest checkout, String returnURL, String cancelURL) {
+        Map<String, Object> params = getSetExpressCheckoutParams(checkout, returnURL, cancelURL);
+
+        params.put("PAYMENTREQUEST_0_SELLERPAYPALACCOUNTID", paypalConfig.getSellerEmail());
+        params.put("ADDROVERRIDE", 1); // todo: ?
+        params.put("PAYMENTREQUEST_0_SHIPTONAME", checkout.getFirstName() + " " + checkout.getLastName());
+        params.put("PAYMENTREQUEST_0_SHIPTOSTREET", checkout.getAddress1());
+        params.put("PAYMENTREQUEST_0_SHIPTOSTREET2", checkout.getAddress2());
+        params.put("PAYMENTREQUEST_0_SHIPTOCITY", checkout.getCity());
+        params.put("PAYMENTREQUEST_0_SHIPTOSTATE", checkout.getState());
+        params.put("PAYMENTREQUEST_0_SHIPTOZIP", checkout.getZipCode());
+        params.put("PAYMENTREQUEST_0_SHIPTOCOUNTRY", checkout.getCountry());
 
         return httpcall("SetExpressCheckout", params);
+    }
+
+    public CheckoutResponse callShortcutExpressCheckout(Checkout checkout, String returnURL, String cancelURL) {
+        return httpcall("SetExpressCheckout", getSetExpressCheckoutParams(checkout, returnURL, cancelURL));
     }
 
     public CheckoutResponse getShippingDetails(String token) {
@@ -118,7 +140,7 @@ public class PaypalCommunicationService {
                 return decodeNVP(respText.toString());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getClass().getName() + ": " + e.getMessage());
         }
         return null;
     }

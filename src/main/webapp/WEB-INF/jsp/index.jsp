@@ -5,7 +5,7 @@
 <%--@elvariable id="paypal" type="org.tinywind.paypalexpresscheckout.config.PaypalConfig"--%>
 
 <page:layout>
-    <form class="form-horizontal col-xs-12" action="/checkout-base" method="post">
+    <form class="form-horizontal col-xs-12" action="/checkout" method="post">
         <div class="row">
             <div class="col-xs-12 col-sm-6">
                 <table class="table table-middle table-striped" style="width: 100%;">
@@ -31,7 +31,6 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <p class="lead"> Item Specifications:</p>
-                <input class="form-control" type="hidden" name="logoImage" value="/img/logo.jpg"/>
                 <table class="table table-middle table-striped" style="width: 100%;">
                     <tr>
                         <td>Item Name:</td>
@@ -68,15 +67,12 @@
                     </tr>
                     <tr>
                         <td>Shipping Discount:</td>
-                        <td><input class="form-control" type="text" name="shippingDiscount" value="3.00" readonly/></td>
+                        <td><input class="form-control" type="text" name="shippingDiscount" value="-3.00" readonly/>
+                        </td>
                     </tr>
                     <tr>
                         <td>Insurance Amount:</td>
                         <td><input class="form-control" type="text" name="insuranceAmount" value="2.00" readonly/></td>
-                    </tr>
-                    <tr>
-                        <td>Total Amount:</td>
-                        <td><input class="form-control" type="text" name="totalAmount" value="17.00" readonly/></td>
                     </tr>
                     <tr>
                         <td>Currency Code:</td>
@@ -104,8 +100,10 @@
                 </table>
             </div>
             <div class="col-xs-12">
+                <input type="hidden" name="shortcut" value="true"/>
                 <button type="button" id="myContainer"></button>
-                <button type="submit" class="btn btn-primary btn-large">
+                <button type="button" class="btn btn-primary btn-large"
+                        onclick="$('[name=shortcut]').val('false'); $(this).closest('form').submit();">
                     Proceed to Check out
                 </button>
             </div>
