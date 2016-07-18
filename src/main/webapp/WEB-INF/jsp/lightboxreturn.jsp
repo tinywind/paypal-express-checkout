@@ -7,8 +7,8 @@
     <div class="col-xs-12"><h3>Loading...</h3></div>
     <page:scripts>
         <script type="text/javascript">
-            if (window != top) top.location.href = '/return?page=return&${url}';
-            else window.location.href = '/return?page=return&${url}'; //return from full page paypal flow
+            if (window != top) top.location.href = '/return?&${url}';
+            else window.location.href = '/return?&${url}'; //return from full page paypal flow
         </script>
     </page:scripts>
 </page:layout>

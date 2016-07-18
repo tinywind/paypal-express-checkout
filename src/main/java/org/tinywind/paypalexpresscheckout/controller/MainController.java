@@ -19,7 +19,6 @@ import org.tinywind.paypalexpresscheckout.service.PaypalCommunicationService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.tinywind.paypalexpresscheckout.util.UrlQueryEncoder.encodeQueryParams;
 
@@ -52,7 +51,6 @@ public class MainController {
             return checkoutPage(checkoutRequest);
         }
 
-//        String returnURL = "/return?page=" + (paypalConfig.getUserActionFlag() ? "return" : "review");
         final String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
         final String cancelURL = basePath + "/cancel";
         final String returnURL = basePath + "/lightboxreturn";
@@ -75,7 +73,7 @@ public class MainController {
     }
 
     @RequestMapping("return")
-    public String returnPage(HttpSession session, Model model, HttpServletRequest request, CheckoutRequest checkoutRequest, String page) {
+    public String returnPage(HttpSession session, Model model, HttpServletRequest request, CheckoutRequest checkoutRequest) {
         if (!StringUtils.isEmpty(checkoutRequest.getToken())) {
             logger.trace(checkoutRequest.toString());
             final CheckoutResponse response = paypalService.getShippingDetails(checkoutRequest.getToken());
@@ -91,20 +89,16 @@ public class MainController {
         checkoutRequest = checkoutBackup;
         model.addAttribute("checkoutRequest", checkoutRequest);
 
-        if (Objects.equals("return", page)) {
-            logger.trace(checkoutRequest.toString());
-            final CheckoutResponse response = paypalService.confirmPayment(checkoutRequest, request.getServerName());
-            logger.trace(response.toString());
+        logger.trace(checkoutRequest.toString());
+        final CheckoutResponse response = paypalService.confirmPayment(checkoutRequest, request.getServerName());
+        logger.trace(response.toString());
 
-            if (!response.isAck()) return errorPage(model, response);
+        if (!response.isAck()) return errorPage(model, response);
 
-            model.addAttribute("checkoutResponse", response);
-            model.addAttribute("byCreditCard", checkoutRequest.getPaymentMethod() == CheckoutRequest.PaymentMethod.CREDIT_CARD);
-            session.invalidate();
-            return "return";
-        }
-
-        return "review";
+        model.addAttribute("checkoutResponse", response);
+        model.addAttribute("byCreditCard", checkoutRequest.getPaymentMethod() == CheckoutRequest.PaymentMethod.CREDIT_CARD);
+        session.invalidate();
+        return "return";
     }
 
     @SuppressWarnings("unchecked")
