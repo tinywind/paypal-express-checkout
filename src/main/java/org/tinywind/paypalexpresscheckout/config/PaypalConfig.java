@@ -49,7 +49,7 @@ public class PaypalConfig {
         userActionFlag = Boolean.getBoolean((String) setting.get("useraction"));
         sellerEmail = (String) account.get("seller_email");
         final String ssl = (String) setting.get("ssl");
-        if (ssl != null) java.lang.System.setProperty("https.protocols", ssl);
+        if (ssl != null) System.setProperty("https.protocols", ssl);
     }
 }
 

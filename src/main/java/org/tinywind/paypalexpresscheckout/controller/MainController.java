@@ -1,6 +1,8 @@
 package org.tinywind.paypalexpresscheckout.controller;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,7 @@ import static org.tinywind.paypalexpresscheckout.util.UrlQueryEncoder.encodeQuer
 
 @Controller
 public class MainController {
+    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
     private static final String SESSION_CHECKOUT = "checkoutDetails";
 
     @Autowired
@@ -57,8 +60,9 @@ public class MainController {
             checkoutRequest.setTotalAmount(checkoutRequest.getTotalAmount() + (checkoutRequest.getShippingAmount() - checkoutRequest.getShippingDiscount()));
 
         session.setAttribute(SESSION_CHECKOUT, checkoutRequest);
+        logger.trace(checkoutRequest.toString());
         final CheckoutResponse response = paypalService.callShortcutExpressCheckout(checkoutRequest, returnURL, cancelURL);
-        System.out.println(response.toString());
+        logger.trace(response.toString());
 
         if (!response.isAck()) return errorPage(model, response);
 
@@ -70,8 +74,9 @@ public class MainController {
     @RequestMapping("return")
     public String returnPage(HttpSession session, Model model, HttpServletRequest request, CheckoutRequest checkoutRequest, String page) {
         if (!StringUtils.isEmpty(checkoutRequest.getToken())) {
+            logger.trace(checkoutRequest.toString());
             final CheckoutResponse response = paypalService.getShippingDetails(checkoutRequest.getToken());
-            System.out.println(response.toString());
+            logger.trace(response.toString());
             model.addAttribute("response", response);
 
             if (!response.isAck()) return errorPage(model, response);
@@ -85,16 +90,15 @@ public class MainController {
 
         if (checkoutRequest.getShippingAmount() != null)
             checkoutRequest.setTotalAmount(checkoutRequest.getTotalAmount() + (checkoutRequest.getShippingAmount() - checkoutRequest.getShippingDiscount()));
-        System.out.println(checkoutRequest.toString());
 
         if (Objects.equals("return", page)) {
+            logger.trace(checkoutRequest.toString());
             final CheckoutResponse response = paypalService.confirmPayment(checkoutRequest, request.getServerName());
-            System.out.println(response.toString());
+            logger.trace(response.toString());
 
             if (!response.isAck()) return errorPage(model, response);
 
             model.addAttribute("response", response);
-
             model.addAttribute("byCreditCard", checkoutRequest.getPaymentMethod() == CheckoutRequest.PaymentMethod.CREDIT_CARD);
             session.invalidate();
             return "return";
