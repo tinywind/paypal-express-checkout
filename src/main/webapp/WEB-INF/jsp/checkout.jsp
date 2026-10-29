@@ -109,6 +109,6 @@
                 });
             };
         </script>
-        <script src="http://www.paypalobjects.com/api/checkout.js" async></script>
+        <script src="https://www.paypalobjects.com/api/checkout.js" async></script>
     </page:scripts>
 </page:layout>
