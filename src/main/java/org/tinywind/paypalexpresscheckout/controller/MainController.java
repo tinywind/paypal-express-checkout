@@ -16,8 +16,8 @@ import org.tinywind.paypalexpresscheckout.model.CheckoutRequest;
 import org.tinywind.paypalexpresscheckout.model.CheckoutResponse;
 import org.tinywind.paypalexpresscheckout.service.PaypalCommunicationService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 
 import static org.tinywind.paypalexpresscheckout.util.UrlQueryEncoder.encodeQueryParams;
