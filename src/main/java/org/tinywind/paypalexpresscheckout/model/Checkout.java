@@ -9,6 +9,8 @@ import org.tinywind.paypalexpresscheckout.service.PaypalCommunicationService;
 import org.tinywind.paypalexpresscheckout.util.ReflectionUtil;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,9 +78,39 @@ public class Checkout extends PaypalCheckout {
     }
 
     public void calculateTotalAmount() {
-//        shippingAmount = 0d;
-        lTotalAmount = itemAmount * quantity;
-        totalAmount = lTotalAmount + taxAmount + shippingAmount + handlingAmount + shippingDiscount + insuranceAmount;
+        if (quantity == null || quantity <= 0) throw new IllegalArgumentException("Invalid quantity");
+        BigDecimal lineTotal = amount(itemAmount, false).multiply(BigDecimal.valueOf(quantity));
+        BigDecimal total = lineTotal.add(amount(taxAmount, false)).add(amount(shippingAmount, false))
+                .add(amount(handlingAmount, false)).add(amount(shippingDiscount, true))
+                .add(amount(insuranceAmount, false));
+        if (lineTotal.precision() > 9 || total.precision() > 9 || total.signum() < 0)
+            throw new IllegalArgumentException("Invalid total amount");
+        lTotalAmount = lineTotal.doubleValue();
+        totalAmount = total.doubleValue();
+    }
+
+    public String formatAmount(Double value) {
+        return amount(value).toPlainString();
+    }
+
+    private BigDecimal amount(Double value, boolean discount) {
+        BigDecimal amount = amount(value);
+        if (discount ? amount.signum() > 0 : amount.signum() < 0)
+            throw new IllegalArgumentException("Invalid amount sign");
+        return amount;
+    }
+
+    private BigDecimal amount(Double value) {
+        if (value == null || !Double.isFinite(value)) throw new IllegalArgumentException("Invalid amount");
+        int decimals = currencyCode == CurrencyCode.HUF || currencyCode == CurrencyCode.JPY
+                || currencyCode == CurrencyCode.TWD ? 0 : 2;
+        BigDecimal amount = BigDecimal.valueOf(value);
+        if (amount.abs().compareTo(new BigDecimal("999999999")) > 0
+                || amount.stripTrailingZeros().scale() > decimals)
+            throw new IllegalArgumentException("Invalid amount precision or range");
+        amount = amount.setScale(decimals, RoundingMode.UNNECESSARY);
+        if (amount.precision() > 9) throw new IllegalArgumentException("Invalid amount range");
+        return amount;
     }
 
     public void set(Checkout checkout) {

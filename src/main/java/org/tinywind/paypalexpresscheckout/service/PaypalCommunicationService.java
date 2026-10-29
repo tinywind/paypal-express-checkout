@@ -37,19 +37,19 @@ public class PaypalCommunicationService {
         params.put("RETURNURL", returnURL);
         params.put("CANCELURL", cancelURL);
         params.put("LOGOIMG", checkout.getLogoImage());
-        params.put("PAYMENTREQUEST_0_AMT", checkout.getTotalAmount());
+        params.put("PAYMENTREQUEST_0_AMT", checkout.formatAmount(checkout.getTotalAmount()));
         params.put("PAYMENTREQUEST_0_CURRENCYCODE", checkout.getCurrencyCode());
-        params.put("PAYMENTREQUEST_0_ITEMAMT", checkout.getItemAmount());
-        params.put("PAYMENTREQUEST_0_TAXAMT", checkout.getTaxAmount());
-        params.put("PAYMENTREQUEST_0_SHIPPINGAMT", checkout.getShippingAmount());
-        params.put("PAYMENTREQUEST_0_HANDLINGAMT", checkout.getHandlingAmount());
-        params.put("PAYMENTREQUEST_0_SHIPDISCAMT", checkout.getShippingDiscount());
-        params.put("PAYMENTREQUEST_0_INSURANCEAMT", checkout.getInsuranceAmount());
+        params.put("PAYMENTREQUEST_0_ITEMAMT", checkout.formatAmount(checkout.getLTotalAmount()));
+        params.put("PAYMENTREQUEST_0_TAXAMT", checkout.formatAmount(checkout.getTaxAmount()));
+        params.put("PAYMENTREQUEST_0_SHIPPINGAMT", checkout.formatAmount(checkout.getShippingAmount()));
+        params.put("PAYMENTREQUEST_0_HANDLINGAMT", checkout.formatAmount(checkout.getHandlingAmount()));
+        params.put("PAYMENTREQUEST_0_SHIPDISCAMT", checkout.formatAmount(checkout.getShippingDiscount()));
+        params.put("PAYMENTREQUEST_0_INSURANCEAMT", checkout.formatAmount(checkout.getInsuranceAmount()));
         params.put("PAYMENTREQUEST_0_PAYMENTACTION", checkout.getPaymentType());
         params.put("L_PAYMENTREQUEST_0_NAME0", checkout.getProductName());
         params.put("L_PAYMENTREQUEST_0_NUMBER0", checkout.getOrderNumber());
         params.put("L_PAYMENTREQUEST_0_DESC0", checkout.getProductDescription());
-        params.put("L_PAYMENTREQUEST_0_AMT0", checkout.getLTotalAmount());
+        params.put("L_PAYMENTREQUEST_0_AMT0", checkout.formatAmount(checkout.getItemAmount()));
         params.put("L_PAYMENTREQUEST_0_QTY0", checkout.getQuantity());
 
         return params;
@@ -90,14 +90,14 @@ public class PaypalCommunicationService {
         params.put("TOKEN", checkout.getToken());
         params.put("PAYERID", checkout.getPayerId());
         params.put("PAYMENTREQUEST_0_PAYMENTACTION", checkout.getPaymentType());
-        params.put("PAYMENTREQUEST_0_AMT", checkout.getTotalAmount());
+        params.put("PAYMENTREQUEST_0_AMT", checkout.formatAmount(checkout.getTotalAmount()));
         params.put("PAYMENTREQUEST_0_CURRENCYCODE", checkout.getCurrencyCode());
-        params.put("PAYMENTREQUEST_0_ITEMAMT", checkout.getItemAmount());
-        params.put("PAYMENTREQUEST_0_TAXAMT", checkout.getTaxAmount());
-        params.put("PAYMENTREQUEST_0_SHIPPINGAMT", checkout.getShippingAmount());
-        params.put("PAYMENTREQUEST_0_HANDLINGAMT", checkout.getHandlingAmount());
-        params.put("PAYMENTREQUEST_0_SHIPDISCAMT", checkout.getShippingDiscount());
-        params.put("PAYMENTREQUEST_0_INSURANCEAMT", checkout.getInsuranceAmount());
+        params.put("PAYMENTREQUEST_0_ITEMAMT", checkout.formatAmount(checkout.getLTotalAmount()));
+        params.put("PAYMENTREQUEST_0_TAXAMT", checkout.formatAmount(checkout.getTaxAmount()));
+        params.put("PAYMENTREQUEST_0_SHIPPINGAMT", checkout.formatAmount(checkout.getShippingAmount()));
+        params.put("PAYMENTREQUEST_0_HANDLINGAMT", checkout.formatAmount(checkout.getHandlingAmount()));
+        params.put("PAYMENTREQUEST_0_SHIPDISCAMT", checkout.formatAmount(checkout.getShippingDiscount()));
+        params.put("PAYMENTREQUEST_0_INSURANCEAMT", checkout.formatAmount(checkout.getInsuranceAmount()));
 
         return httpcall("DoExpressCheckoutPayment", params);
     }
@@ -140,7 +140,7 @@ public class PaypalCommunicationService {
                 return decodeNVP(respText.toString());
             }
         } catch (IOException e) {
-            logger.error(e.getClass().getName() + ": " + e.getMessage());
+            logger.error("PayPal communication failed");
         }
         return null;
     }
@@ -159,8 +159,7 @@ public class PaypalCommunicationService {
                     final Field field = CheckoutResponse.class.getDeclaredField(Checkout.checkoutVarName(key));
                     ReflectionUtil.setValue(nvp, CheckoutResponse.class, field, value);
                 } catch (Exception e) {
-                    logger.error(e.getClass().getName() + ": " + e.getMessage());
-                    if (key != null) logger.debug("    key: " + key + ", value: " + value);
+                    logger.warn("Unable to decode a PayPal response field ({})", e.getClass().getSimpleName());
                 }
             }
         }
