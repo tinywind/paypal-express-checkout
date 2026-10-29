@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%--@elvariable id="tagExtender" type="kr.tinywind.blog.util.TagExtender"--%>
 
 <%@attribute name="method" required="false" type="java.lang.String" %>

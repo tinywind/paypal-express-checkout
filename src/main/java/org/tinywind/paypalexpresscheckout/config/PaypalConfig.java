@@ -1,13 +1,12 @@
 package org.tinywind.paypalexpresscheckout.config;
 
-import com.esotericsoftware.yamlbeans.YamlException;
-import com.esotericsoftware.yamlbeans.YamlReader;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ClassPathResource;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.io.InputStreamReader;
-import java.util.Map;
+import jakarta.annotation.PostConstruct;
+import java.util.Properties;
 
 @Data
 @Component
@@ -23,32 +22,24 @@ public class PaypalConfig {
     private String sellerEmail;
     private String environment;
 
-    @SuppressWarnings("unchecked")
     @PostConstruct
-    public void init() throws YamlException {
-        final YamlReader reader = new YamlReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("paypal.yml")));
-        final Map<String, Object> prop = (Map<String, Object>) reader.read();
-        final Map<String, Object> setting = (Map<String, Object>) prop.get("setting");
-        final Map<String, Object> account = (Map<String, Object>) prop.get("account");
-        Map<String, Object> accountInfoSender;
-        if ("true".equalsIgnoreCase((String) setting.get("flag"))) {
-            environment = "sandbox";
-            accountInfoSender = (Map<String, Object>) account.get("sandbox");
-        } else {
-            environment = "production";
-            accountInfoSender = (Map<String, Object>) account.get("paypal");
-        }
-        final Map<String, Object> accountInfo = accountInfoSender;
-        gvApiUserName = (String) accountInfo.get("user");
-        gvApiPassword = (String) accountInfo.get("password");
-        gvApiSignature = (String) accountInfo.get("signature");
-        gvApiEndpoint = (String) accountInfo.get("nvp_endpoint");
-        paypalUrl = (String) accountInfo.get("checkout_url");
-        gvBNCode = (String) setting.get("sbn_code");
-        gvVersion = (String) setting.get("api_version");
-        userActionFlag = Boolean.getBoolean((String) setting.get("useraction"));
-        sellerEmail = (String) account.get("seller_email");
-        final String ssl = (String) setting.get("ssl");
+    public void init() {
+        YamlPropertiesFactoryBean loader = new YamlPropertiesFactoryBean();
+        loader.setResources(new ClassPathResource("paypal.yml"));
+        Properties properties = loader.getObject();
+        boolean sandbox = Boolean.parseBoolean(properties.getProperty("setting.flag"));
+        environment = sandbox ? "sandbox" : "production";
+        String prefix = "account." + (sandbox ? "sandbox" : "paypal") + ".";
+        gvApiUserName = properties.getProperty(prefix + "user");
+        gvApiPassword = properties.getProperty(prefix + "password");
+        gvApiSignature = properties.getProperty(prefix + "signature");
+        gvApiEndpoint = properties.getProperty(prefix + "nvp_endpoint");
+        paypalUrl = properties.getProperty(prefix + "checkout_url");
+        gvBNCode = properties.getProperty("setting.sbn_code");
+        gvVersion = properties.getProperty("setting.api_version");
+        userActionFlag = Boolean.parseBoolean(properties.getProperty("setting.useraction"));
+        sellerEmail = properties.getProperty("account.seller_email");
+        String ssl = properties.getProperty("setting.ssl");
         if (ssl != null) System.setProperty("https.protocols", ssl);
     }
 }
